@@ -5,7 +5,7 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.label import Label
 from kivy.uix.progressbar import ProgressBar
 
-from Frontend.backfon import *
+from Frontend.background import *
 from Frontend.moduls import RoundedButton, DarkenedGridLayout
 
 from Backend.switching import *

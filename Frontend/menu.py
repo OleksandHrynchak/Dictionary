@@ -4,7 +4,7 @@ from kivy.lang import Builder
 
 
 from Backend.switching import *
-from Frontend.backfon import *
+from Frontend.background import *
 from Frontend.moduls import RoundedButton, DarkenedGridLayout
 
 

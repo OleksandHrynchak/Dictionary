@@ -10,9 +10,9 @@ from Frontend.moduls import RoundedButton
 from Database.database_operations import *
 
 
-class AddThemePoput(Popup):
+class AddThemePopup(Popup):
     def __init__(self, **kwargs):
-        super(AddThemePoput, self).__init__(**kwargs)
+        super(AddThemePopup, self).__init__(**kwargs)
         self.floatlayout = FloatLayout()
 
         self.content = self.floatlayout
@@ -127,12 +127,108 @@ class RenamePopup(Popup):
         )
         self.floatlayout.add_widget(self.button_update)
 
-        self.button_update.bind(on_press=self.dismiss)
+        # self.button_update.bind(on_press=self.dismiss)
 
 
-class NotFilledPopup(Popup):
+class DeleteNotePopup(Popup):
+    def __init__(self, word, translate, **kwargs):
+        super(DeleteNotePopup, self).__init__(**kwargs)
+        self.floatlayout = FloatLayout()
+
+        self.content = self.floatlayout
+
+        self.lable_delete = Label(
+            text="Видалити запис:",
+            font_size='18',
+            size_hint=(1, 0),
+            pos_hint={'x': 0, 'y': .70}
+        )
+        self.floatlayout.add_widget(self.lable_delete)
+
+        self.lable_theme = Label(
+            text=f"{word} - {translate}",
+            font_size='18',
+            size_hint=(1, 0),
+            pos_hint={'x': 0, 'y': .60}
+        )
+        self.floatlayout.add_widget(self.lable_theme)
+
+        self.button_delete = RoundedButton(
+            text="Видалити",
+            font_size=20,
+            size_hint=(.75, .18),
+            pos_hint={'x': .125, 'y': .08}
+        )
+        self.floatlayout.add_widget(self.button_delete)
+
+        self.button_delete.bind(on_press=self.dismiss)
+
+
+class RenameNotesPopup(Popup):
+    def __init__(self, word, translate, ** kwargs):
+        super(RenameNotesPopup, self).__init__(**kwargs)
+        self.floatlayout = FloatLayout()
+
+        self.content = self.floatlayout
+
+        self.lable_footnote = Label(
+            text="Редагувати запис:",
+            font_size='18',
+            size_hint=(1, 0),
+            pos_hint={'x': 0, 'y': .80}
+        )
+        self.floatlayout.add_widget(self.lable_footnote)
+
+        self.lable_notes = Label(
+            text=f"{word} - {translate}",
+            font_size='18',
+            size_hint=(1, 0),
+            pos_hint={'x': 0, 'y': .70}
+        )
+        self.floatlayout.add_widget(self.lable_notes)
+
+        self.text_input_word = TextInput(
+            text=word,
+            hint_text_color=[.55, .55, .55, 1],
+            font_size=18,
+            halign="center",
+            size_hint=(.38, .15),
+            pos_hint={'x': .1, 'y': .4},
+            foreground_color=[1, 1, 1, 1],
+            background_color=[.29, .29, .29],
+            cursor_color=[1, 1, 1, 1],
+            multiline=False
+        )
+        self.floatlayout.add_widget(self.text_input_word)
+
+        self.text_input_translate = TextInput(
+            text=translate,
+            hint_text_color=[.55, .55, .55, 1],
+            font_size=18,
+            halign="center",
+            size_hint=(.38, .15),
+            pos_hint={'x': .5, 'y': .4},
+            foreground_color=[1, 1, 1, 1],
+            background_color=[.29, .29, .29],
+            cursor_color=[1, 1, 1, 1],
+            multiline=False
+        )
+        self.floatlayout.add_widget(self.text_input_translate)
+
+        self.button_update = RoundedButton(
+            text="Зберегти",
+            font_size=20,
+            size_hint=(.75, .18),
+            pos_hint={'x': .125, 'y': .08}
+        )
+        self.floatlayout.add_widget(self.button_update)
+
+        # self.button_update.bind(on_press=self.dismiss)
+
+
+class ErrorPopup(Popup):
     def __init__(self, **kwargs):
-        super(NotFilledPopup, self).__init__(**kwargs)
+        super(ErrorPopup, self).__init__(**kwargs)
         self.floatlayout = FloatLayout()
 
         self.content = self.floatlayout
@@ -159,7 +255,7 @@ class NotFilledPopup(Popup):
 class DictBubble(ModalView):
     def __init__(self, **kwargs):
         super(DictBubble, self).__init__(**kwargs)
-        bubble = Bubble(orientation="horizontal")
+        self.bubble = Bubble(orientation="horizontal")
 
         self.button_rename = BubbleButton(text="Rename")
         self.button_rename.bind(on_press=self.dismiss)
@@ -167,6 +263,6 @@ class DictBubble(ModalView):
         self.button_delete = BubbleButton(text="Delete")
         self.button_delete.bind(on_press=self.dismiss)
 
-        bubble.add_widget(self.button_rename)
-        bubble.add_widget(self.button_delete)
-        self.add_widget(bubble)
+        self.bubble.add_widget(self.button_rename)
+        self.bubble.add_widget(self.button_delete)
+        self.add_widget(self.bubble)

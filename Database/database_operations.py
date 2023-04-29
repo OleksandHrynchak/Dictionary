@@ -118,11 +118,38 @@ def delete_theme():
         connection.close()
 
 
-def delete_words():
+def delete_notes():
     connection = connect()
     try:
         with connection.cursor() as cursor:
             cursor.execute(f"DELETE FROM Notes WHERE themsid=('{theme_id}')")
+            connection.commit()
+    except pymysql.Error as e:
+        print(f"Error executing UPDATE query: {e}")
+    finally:
+        connection.close()
+
+
+def update_note(up_word, up_translate, old_word, old_translate):
+    connection = connect()
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                f"UPDATE Notes SET word=('{up_word}'), translate=('{up_translate}') \
+                WHERE themsid=('{theme_id}')AND word=('{old_word}') AND translate=('{old_translate}') ")
+            connection.commit()
+    except pymysql.Error as e:
+        print(f"Error executing UPDATE query: {e}")
+    finally:
+        connection.close()
+
+
+def delete_note(word, translate):
+    connection = connect()
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute(f"DELETE FROM Notes WHERE themsid=('{theme_id}') AND\
+                            word = ('{word}') AND translate = ('{translate}')")
             connection.commit()
     except pymysql.Error as e:
         print(f"Error executing UPDATE query: {e}")

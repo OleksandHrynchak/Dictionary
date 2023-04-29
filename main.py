@@ -5,7 +5,7 @@ from Frontend.start_one import *
 from Frontend.start_two import *
 from Frontend.setings import *
 from Frontend.themes import *
-from Frontend.backfon import *
+from Frontend.background import *
 
 from Backend.switching import *
 
