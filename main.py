@@ -18,5 +18,5 @@ class Dictionary(MDApp):
         return sm
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     Dictionary().run()

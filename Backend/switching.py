@@ -1,61 +1,105 @@
+import random, time
+
+
 from kivy.uix.screenmanager import ScreenManager, NoTransition
 
-from Frontend.popups import ErrorPopup
-from Database.database_operations import themes_from_db
+from Frontend.popups import (
+    popup_empty,
+    popup_same_theme,
+    popup_settings_error,
+)
+from Database.database_operations import (
+    themes_from_db,
+    call_settings,
+    output_settings_notes,
+)
 
 
 # log (how pages one(Repetition) or two(Check))
-def page_one(Check, activeone):
-    if activeone == True:
-        global pagecheck
-        pagecheck = True
-    elif activeone == False:
-        pagecheck = False
-
-
-def page_two(Repetition, activetwo):
-    if activetwo == True:
-        global pagerepetition
-        pagerepetition = True
-    elif activetwo == False:
-        pagerepetition = False
-
-
-def one_or_two(any):
-    if pagecheck:
-        set_screen('pageStartOne')
-    elif pagerepetition:
-        set_screen('pageStartTwo')
+def page_selection(button):
+    if call_settings()[2]:
+        set_screen("pageStartTwo")
+    elif call_settings()[3]:
+        set_screen("pageStartOne")
     else:
-        set_screen('menu')
-# /log
+        set_screen("menu")
+
+
+def random_or_successively():
+    randomly = call_settings()[6]
+    successively = call_settings()[7]
+    if randomly:
+        return show_random_notes()
+    elif successively:
+        return show_successively_notes()
+
+
+def show_random_notes():
+    word = call_settings()[4]
+    translate = call_settings()[5]
+    if word and translate:
+        return separation_notes_randomly()
+    elif word and not translate:
+        return shuffle_list(separation_word())
+    elif translate and not word:
+        return shuffle_list(separation_translate())
+
+
+def show_successively_notes():
+    word = call_settings()[4]
+    translate = call_settings()[5]
+    if word and translate:
+        return separation_notes_successively()
+    elif word and not translate:
+        return separation_word()
+    elif translate and not word:
+        return separation_translate()
+
+
+def separation_word():
+    word_list = [word for word in output_settings_notes()[::2]]
+    return word_list
+
+
+def separation_translate():
+    translate_list = [word for word in output_settings_notes()[1::2]]
+    return translate_list
+
+
+def separation_notes_successively():
+    sorted_list_a = [
+        list(word_translate(a, output_settings_notes()))[0]
+        if i % 2 == 0
+        else list(word_translate(a, output_settings_notes()))[1]
+        for i, a in enumerate(output_settings_notes()[::2])
+    ]
+    sorted_list_b = [
+        list(word_translate(a, output_settings_notes()))[0]
+        if i % 2 != 0
+        else list(word_translate(a, output_settings_notes()))[1]
+        for i, a in enumerate(output_settings_notes()[::2])
+    ]
+    separation_list = sorted_list_a + sorted_list_b
+    return separation_list
+
+
+def separation_notes_randomly():
+    sorted_list_random = [
+        list(word_translate(a, output_settings_notes()))[0]
+        if i % 2 == 0
+        else list(word_translate(a, output_settings_notes()))[1]
+        for i, a in enumerate(shuffle_list(output_settings_notes()))
+    ]
+    return sorted_list_random
+
+
+def shuffle_list(lst):
+    random_lst = lst.copy()
+    random.shuffle(random_lst)
+    return random_lst
+
 
 # error
-
-
-def popup_empty():
-    popup = ErrorPopup(
-        title="The field is not filled",
-        title_size=18,
-        size_hint=(.8, .6),
-        pos_hint={'x': .1, 'y': .2},
-        separator_height=3,
-        separator_color=[.0, .84, .64],
-    )
-    popup.open()
-
-
-def popup_same_theme():
-    popup = ErrorPopup(
-        title="Repetition error",
-        title_size=18,
-        size_hint=(.8, .6),
-        pos_hint={'x': .1, 'y': .2},
-        separator_height=3,
-        separator_color=[.0, .84, .64],
-    )
-    popup.open()
-    popup.lable_warning.text = "This theme already exists"
 
 
 def field_empty(word):
@@ -72,7 +116,7 @@ def field_empty(word):
 
 def fields_empty(word, translate, function):
     """
-    fields_empty: 
+    fields_empty:
         checks if the fields are not empty.
     """
     test_word = word.strip()
@@ -112,7 +156,6 @@ def check_themes(word, function):
     else:
         function(word)
         return
-# error\
 
 
 def word_translate(word, lst):
@@ -122,9 +165,17 @@ def word_translate(word, lst):
     """
     index = lst.index(word)
     if index % 2 == 0:
-        return word, lst[index+1]
+        return word, lst[index + 1]
     else:
-        return lst[index-1], word
+        return lst[index - 1], word
+
+
+def translation_pair(word, lst):
+    index = lst.index(word)
+    if index % 2 == 0:
+        return lst[index + 1]
+    else:
+        return lst[index - 1]
 
 
 def set_screen(name_screen):
