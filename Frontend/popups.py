@@ -4,6 +4,7 @@ from kivy.uix.modalview import ModalView
 from kivy.uix.bubble import Bubble, BubbleButton
 from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
+from kivy.uix.boxlayout import BoxLayout
 
 from Frontend.moduls import RoundedButton
 from Database.database_operations import *
@@ -285,14 +286,18 @@ class DictBubble(ModalView):
         super(DictBubble, self).__init__(**kwargs)
         self.bubble = Bubble(orientation="horizontal")
 
+        layout = BoxLayout(orientation="horizontal")
+
         self.button_rename = BubbleButton(text="Rename")
         self.button_rename.bind(on_press=self.dismiss)
 
         self.button_delete = BubbleButton(text="Delete")
         self.button_delete.bind(on_press=self.dismiss)
 
-        self.bubble.add_widget(self.button_rename)
-        self.bubble.add_widget(self.button_delete)
+        layout.add_widget(self.button_rename)
+        layout.add_widget(self.button_delete)
+
+        self.bubble.add_widget(layout)
         self.add_widget(self.bubble)
 
 
