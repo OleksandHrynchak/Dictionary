@@ -12,6 +12,7 @@ from Backend.switching import *
 class Menu(Screen):
     def __init__(self, **kwargs):
         super(Menu, self).__init__(**kwargs)
+
         floatlayout = FloatLayout()
         self.root = Builder.load_string(KV)
 

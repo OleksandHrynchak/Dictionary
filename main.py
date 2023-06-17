@@ -1,13 +1,10 @@
 from kivymd.app import MDApp
 
-from Frontend.menu import *
-from Frontend.start_one import *
-from Frontend.start_two import *
-from Frontend.setings import *
-from Frontend.themes import *
-from Frontend.background import *
-
-from Backend.switching import *
+from Frontend.menu import sm
+from Frontend.start_one import sm
+from Frontend.start_two import sm
+from Frontend.setings import sm
+from Frontend.themes import sm
 
 
 class Dictionary(MDApp):

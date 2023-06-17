@@ -1,4 +1,4 @@
-import random, time
+import random
 
 
 from kivy.uix.screenmanager import ScreenManager, NoTransition
@@ -8,11 +8,17 @@ from Frontend.popups import (
     popup_same_theme,
     popup_settings_error,
 )
-from Database.database_operations import (
+from Database.SQLite3.database_operations import (
     themes_from_db,
     call_settings,
     output_settings_notes,
 )
+
+"""from Database.MySQL.database_operations import (
+    themes_from_db,
+    call_settings,
+    output_settings_notes,
+)"""
 
 
 # log (how pages one(Repetition) or two(Check))
@@ -114,7 +120,7 @@ def field_empty(word):
         return False
 
 
-def fields_empty(word, translate, function):
+def fields_empty(word: str, translate: str, function):
     """
     fields_empty:
         checks if the fields are not empty.
@@ -140,7 +146,7 @@ def same_theme(word):
         return False
 
 
-def check_themes(word, function):
+def check_themes(word: str, function):
     """
     check_themes:
         field_empty checks if the field is not empty.
@@ -149,16 +155,13 @@ def check_themes(word, function):
     """
     if not field_empty(word):
         popup_empty()
-        return
     elif not same_theme(word):
         popup_same_theme()
-        return
     else:
         function(word)
-        return
 
 
-def word_translate(word, lst):
+def word_translate(word: str, lst: list) -> tuple:
     """
     word_translate:
         checks whether the selected word is a word or a translation and outputs its pair to it.
@@ -170,7 +173,7 @@ def word_translate(word, lst):
         return lst[index - 1], word
 
 
-def translation_pair(word, lst):
+def translation_pair(word: str, lst: list) -> str:
     index = lst.index(word)
     if index % 2 == 0:
         return lst[index + 1]
@@ -181,7 +184,7 @@ def translation_pair(word, lst):
 def set_screen(name_screen):
     """
     set_screen:
-        adds all pages and names them
+        adds all pages and names them.
     """
     sm.current = name_screen
 

@@ -4,17 +4,27 @@ from kivy.uix.modalview import ModalView
 from kivy.uix.bubble import Bubble, BubbleButton
 from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
+from kivy.uix.boxlayout import BoxLayout
 
 from Frontend.moduls import RoundedButton
-from Database.database_operations import *
+from Database.SQLite3.database_operations import *
+
+# To work with Mysql, uncomment the import from the mysql folder and comment from SQLite 3.
+# from Database.MySQL.database_operations import *
 
 
 class AddThemePopup(Popup):
+    """
+    AddThemePopup:
+        class inherited from `Popup`,\n
+        that contains a textinput label and a button,\n
+        used to add a topic to the database.
+    """
+
     def __init__(self, **kwargs):
         super(AddThemePopup, self).__init__(**kwargs)
 
         self.floatlayout = FloatLayout()
-
         self.content = self.floatlayout
 
         self.label_name_theme = Label(
@@ -49,10 +59,19 @@ class AddThemePopup(Popup):
 
 
 class DeletePopup(Popup):
+    """
+    DeletePopup:
+        class inherited from `Popup`,\n
+        which contains a label with a warning about deletion
+        and a label that indicates the theme that will be deleted and a button,\n
+        additionally accepts the name of the theme `name_theme`,
+        a class is created to notify about the deletion of the selected theme.
+    """
+
     def __init__(self, name_theme, **kwargs):
         super(DeletePopup, self).__init__(**kwargs)
-        self.floatlayout = FloatLayout()
 
+        self.floatlayout = FloatLayout()
         self.content = self.floatlayout
 
         self.label_delete = Label(
@@ -83,10 +102,15 @@ class DeletePopup(Popup):
 
 
 class RenamePopup(Popup):
+    """
+    RenamePopup:
+        class inherited from `Popup`,\n
+    """
+
     def __init__(self, name_theme, **kwargs):
         super(RenamePopup, self).__init__(**kwargs)
-        self.floatlayout = FloatLayout()
 
+        self.floatlayout = FloatLayout()
         self.content = self.floatlayout
 
         self.label_rename = Label(
@@ -131,8 +155,8 @@ class RenamePopup(Popup):
 class DeleteNotePopup(Popup):
     def __init__(self, word, translate, **kwargs):
         super(DeleteNotePopup, self).__init__(**kwargs)
-        self.floatlayout = FloatLayout()
 
+        self.floatlayout = FloatLayout()
         self.content = self.floatlayout
 
         self.label_delete = Label(
@@ -165,8 +189,8 @@ class DeleteNotePopup(Popup):
 class RenameNotesPopup(Popup):
     def __init__(self, word, translate, **kwargs):
         super(RenameNotesPopup, self).__init__(**kwargs)
-        self.floatlayout = FloatLayout()
 
+        self.floatlayout = FloatLayout()
         self.content = self.floatlayout
 
         self.label_footnote = Label(
@@ -225,8 +249,8 @@ class RenameNotesPopup(Popup):
 class ErrorPopup(Popup):
     def __init__(self, **kwargs):
         super(ErrorPopup, self).__init__(**kwargs)
-        self.floatlayout = FloatLayout()
 
+        self.floatlayout = FloatLayout()
         self.content = self.floatlayout
 
         self.label_warning = Label(
@@ -251,8 +275,8 @@ class ErrorPopup(Popup):
 class BackPopup(Popup):
     def __init__(self, **kwargs):
         super(BackPopup, self).__init__(**kwargs)
-        self.floatlayout = FloatLayout()
 
+        self.floatlayout = FloatLayout()
         self.content = self.floatlayout
 
         self.label_warning = Label(
@@ -283,7 +307,9 @@ class BackPopup(Popup):
 class DictBubble(ModalView):
     def __init__(self, **kwargs):
         super(DictBubble, self).__init__(**kwargs)
+
         self.bubble = Bubble(orientation="horizontal")
+        box_layout = BoxLayout(orientation="horizontal")
 
         self.button_rename = BubbleButton(text="Rename")
         self.button_rename.bind(on_press=self.dismiss)
@@ -291,17 +317,19 @@ class DictBubble(ModalView):
         self.button_delete = BubbleButton(text="Delete")
         self.button_delete.bind(on_press=self.dismiss)
 
-        self.bubble.add_widget(self.button_rename)
-        self.bubble.add_widget(self.button_delete)
+        box_layout.add_widget(self.button_rename)
+        box_layout.add_widget(self.button_delete)
+
+        self.bubble.add_widget(box_layout)
         self.add_widget(self.bubble)
 
 
 class RightAnswerPopup(Popup):
     def __init__(self, **kwargs):
         super(RightAnswerPopup, self).__init__(**kwargs)
+
         self.auto_dismiss = False
         self.floatlayout = FloatLayout()
-
         self.content = self.floatlayout
 
         self.button = RoundedButton(
@@ -318,9 +346,9 @@ class RightAnswerPopup(Popup):
 class WrongAnswerPopup(Popup):
     def __init__(self, correct_word, **kwargs):
         super(WrongAnswerPopup, self).__init__(**kwargs)
+
         self.auto_dismiss = False
         self.floatlayout = FloatLayout()
-
         self.content = self.floatlayout
 
         self.label_incorrect_word = Label(
