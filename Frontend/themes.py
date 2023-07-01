@@ -1,4 +1,5 @@
 from kivy.lang import Builder
+from kivy.clock import Clock
 
 from kivy.uix.screenmanager import Screen
 from kivy.uix.boxlayout import BoxLayout
@@ -8,14 +9,26 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.spinner import Spinner
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.button import Button
-from kivy.clock import Clock
 
 
-from Frontend.background import *
+from Frontend.background import KV
 from Frontend.moduls import RoundedButton, DarkenedGridLayout
-from Frontend.popups import *
-from Backend.switching import *
-from Database.database_operations import (
+from Frontend.popups import (
+    AddThemePopup,
+    RenameNotesPopup,
+    DeleteNotePopup,
+    RenamePopup,
+    DeletePopup,
+    DictBubble,
+)
+from Backend.switching import (
+    set_screen,
+    fields_empty,
+    check_themes,
+    word_translate,
+    sm,
+)
+from Database.SQLite3.database_operations import (
     add_theme,
     themes_from_db,
     id_theme,
@@ -28,8 +41,28 @@ from Database.database_operations import (
     delete_note,
 )
 
+# To work with Mysql, uncomment the import from the mysql folder and comment from SQLite 3.
+"""from Database.MySQL.database_operations import (
+    add_theme,
+    themes_from_db,
+    id_theme,
+    save_word_and_translate,
+    output_notes,
+    update_theme,
+    delete_theme,
+    delete_notes,
+    update_note,
+    delete_note,
+)"""
+
 
 class PageThemes(Screen):
+    """
+    PageThemes:
+        Class inherited from `Screen`,\n
+        which represents a screen for viewing topics in the program and their content.
+    """
+
     def __init__(self, **kwargs):
         super(PageThemes, self).__init__(**kwargs)
         # Main layout.
@@ -55,7 +88,7 @@ class PageThemes(Screen):
         self.scrollview_for_notes = ScrollView(
             size_hint=(0.7, 0.6), pos_hint={"x": 0.15, "y": 0.22}
         )
-        # background.
+        # Background.
         self.root = Builder.load_string(KV)
         # --------------------------------------------------------------------------------------
         self.spinner = Spinner(
@@ -77,6 +110,7 @@ class PageThemes(Screen):
         self.close_spiner = None
         self.spinner.dropdown_cls.max_height = self.spinner.height * 2 + 5
         # -------------------------------------------------------------------------------------
+        # set_screen opens the selected screen
         self.relativelayout.add_widget(
             RoundedButton(
                 text="<--",
@@ -159,7 +193,7 @@ class PageThemes(Screen):
             separator_color=[0.0, 0.84, 0.64],
         )
         self.popup_new_theme.open()
-        button_add = self.popup_new_theme.add_button
+        button_add = self.popup_new_theme.button_add
         # check_themes checks whether the field is empty and whether there are no similar themes.
         button_add.bind(
             on_press=lambda pres: check_themes(
@@ -167,7 +201,7 @@ class PageThemes(Screen):
             )
         )
 
-    def add_new_theme(self, new_theme):
+    def add_new_theme(self, new_theme: str):
         """
         add_new_theme:
             add_theme transfers the word to the database
@@ -178,7 +212,7 @@ class PageThemes(Screen):
         self.spinner.text = themes_from_db()[-1]
         self.popup_new_theme.dismiss()
 
-    def click_button_add_note(self, word, translate):
+    def click_button_add_note(self, word: str, translate: str):
         """
         click_button_add_note:
             save_word_and_translate transfers the word and translations to the database.
@@ -190,29 +224,33 @@ class PageThemes(Screen):
         self.range_notes(spinner=None, name_theme=None)
         self.scrollview_for_notes.scroll_y = 0
 
-    def range_notes(self, spinner, name_theme):
+    def range_notes(self, spinner, name_theme: str):
         """
         range_notes:
-            output_notes outputs a list of words and translations from the selected theme.
+            output_notes if the theme is not empty outputs a list of words and translations
+            from the selected theme, if the empty function is not executed.
         """
         self.gridlayout.clear_widgets()
         self.notes = output_notes()
-        for word in self.notes:
-            self.buttons_notes = Button(
-                font_size=18,
-                text=word,
-                height=50,
-                size_hint_y=None,
-                text_size=(None, None),
-                background_color=[0, 0, 0, 0],
-                background_normal="",
-            )
-            self.gridlayout.add_widget(self.buttons_notes)
-            # start_timer_for_notes calls a bubble if the button is held down for more than 1 second.
-            self.buttons_notes.bind(on_press=self.start_timer_for_notes)
-            # stop_timer_for_notes cancels the start_timer_for_notes event if
-            # the button has not been pressed for more than one second.
-            self.buttons_notes.bind(on_release=self.stop_timer_for_notes)
+        if self.notes != None:
+            for word in self.notes:
+                self.buttons_notes = Button(
+                    font_size=18,
+                    text=word,
+                    height=50,
+                    size_hint_y=None,
+                    text_size=(None, None),
+                    background_color=[0, 0, 0, 0],
+                    background_normal="",
+                )
+                self.gridlayout.add_widget(self.buttons_notes)
+                # start_timer_for_notes calls a bubble if the button is held down for more than 1 second.
+                self.buttons_notes.bind(on_press=self.start_timer_for_notes)
+                # stop_timer_for_notes cancels the start_timer_for_notes event if
+                # the button has not been pressed for more than one second.
+                self.buttons_notes.bind(on_release=self.stop_timer_for_notes)
+        else:
+            return
         self.gridlayout.bind(minimum_height=self.gridlayout.setter("height"))
         self.scrollview_for_notes.scroll_y = 1
 
@@ -272,8 +310,10 @@ class PageThemes(Screen):
             )
         )
 
-    def rename_note(self, up_word, up_translate):
+    def rename_note(self, up_word: str, up_translate: str):
         """
+        `up_word` -> `update_word`\n
+        `up_translate` -> `update_translate`\n
         rename_note:
             update_note updates the word and translation that
                 were selected and changed in the text fields.
@@ -300,7 +340,7 @@ class PageThemes(Screen):
         # remove_note removes the selected word and translation.
         button.bind(on_press=self.remove_note)
 
-    def remove_note(self, delete):
+    def remove_note(self, button):
         """
         remove_note:
             delete_note deletes the selected word and translation from the database.
@@ -370,19 +410,20 @@ class PageThemes(Screen):
         # check_themes checks whether the field is empty and whether there are no similar themes.
         button.bind(
             on_press=lambda pres: check_themes(
-                self.popup_rename_theme.text_input.text, self.rename_theme
+                self.popup_rename_theme.text_input_rename_theme.text, self.rename_theme
             )
         )
 
-    def rename_theme(self, update):
+    def rename_theme(self, up_theme: str):
         """
+        `up_theme` -> `update_theme`\n
         rename_theme:
             index_theme assigns an index to the selected topic.
             update_theme update_theme updates the selected theme.
             themes_from_db retrieves themes from the database.
         """
         index_theme = themes_from_db().index(f"{self.spinner.text}")
-        update_theme(update)
+        update_theme(up_theme)
         self.spinner.values = themes_from_db()
         self.spinner.text = themes_from_db()[index_theme]
         self.popup_rename_theme.dismiss()
@@ -402,7 +443,7 @@ class PageThemes(Screen):
         # remove_theme removes the selected topic.
         button.bind(on_press=self.remove_theme)
 
-    def remove_theme(self, delete):
+    def remove_theme(self, button):
         """
         remove_theme:
             delete_notes deletes all words from the theme.

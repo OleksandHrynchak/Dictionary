@@ -1,3 +1,22 @@
+"""
+database_setup.py
+
+This file contains a script to set up a MySQL database for storing dictionary data.
+It establishes a connection to the database and creates the necessary tables,
+including "Themes", "Notes", and "Settings", with their respective fields.
+
+The script utilizes the PyMySQL library for connecting to the MySQL server.
+
+After establishing the connection, the code executes CREATE TABLE statements
+to create the required tables. It also inserts initial data into the "Settings" table.
+
+Note: Before running this script, make sure you have installed the PyMySQL library
+and configured the MySQL server with the appropriate credentials and database.
+
+Please modify the connection parameters (host, user, password, port, and database)
+according to your MySQL server configuration.
+"""
+
 import pymysql
 
 

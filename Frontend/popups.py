@@ -7,15 +7,20 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.boxlayout import BoxLayout
 
 from Frontend.moduls import RoundedButton
-from Database.database_operations import *
 
 
 class AddThemePopup(Popup):
+    """
+    AddThemePopup:
+        class inherited from `Popup`.\n
+        which contains a textinput label and a button.\n
+        used to add a theme to the database.
+    """
+
     def __init__(self, **kwargs):
         super(AddThemePopup, self).__init__(**kwargs)
 
         self.floatlayout = FloatLayout()
-
         self.content = self.floatlayout
 
         self.label_name_theme = Label(
@@ -50,10 +55,19 @@ class AddThemePopup(Popup):
 
 
 class DeletePopup(Popup):
+    """
+    DeletePopup:
+        class inherited from `Popup`.\n
+        which contains a label with a warning about deletion
+        and a label that indicates the theme that will be deleted and a button.\n
+        additionally accepts the name of the theme `name_theme`,
+        used to notify when the selected theme is deleted.
+    """
+
     def __init__(self, name_theme, **kwargs):
         super(DeletePopup, self).__init__(**kwargs)
-        self.floatlayout = FloatLayout()
 
+        self.floatlayout = FloatLayout()
         self.content = self.floatlayout
 
         self.label_delete = Label(
@@ -84,10 +98,19 @@ class DeletePopup(Popup):
 
 
 class RenamePopup(Popup):
+    """
+    RenamePopup:
+        class inherited from `Popup`.\n
+        which contains a label with a warning about renaming and a label indicating the theme to be renamed,
+        a text input containing the name of the theme that can be changed, and a button to change the theme name.\n
+        additionally takes the theme name `name_theme`,
+        used to notify about the renaming of the selected theme.
+    """
+
     def __init__(self, name_theme, **kwargs):
         super(RenamePopup, self).__init__(**kwargs)
-        self.floatlayout = FloatLayout()
 
+        self.floatlayout = FloatLayout()
         self.content = self.floatlayout
 
         self.label_rename = Label(
@@ -130,10 +153,19 @@ class RenamePopup(Popup):
 
 
 class DeleteNotePopup(Popup):
+    """
+    DeleteNotePopup:
+        class inherited from `Popup`,\n
+        which contains a delete warning label and a label with the word and translation
+        to delete and a button to delete the note.\n
+        additionally accepts the name of the word `word` and the translation `translate`,
+        used to notify when the selected note is deleted.
+    """
+
     def __init__(self, word, translate, **kwargs):
         super(DeleteNotePopup, self).__init__(**kwargs)
-        self.floatlayout = FloatLayout()
 
+        self.floatlayout = FloatLayout()
         self.content = self.floatlayout
 
         self.label_delete = Label(
@@ -164,10 +196,20 @@ class DeleteNotePopup(Popup):
 
 
 class RenameNotesPopup(Popup):
+    """
+    RenameNotesPopup:
+        class inherited from `Popup`,\n
+        which contains a renaming warning label and a label with a word and translation for renaming
+        a textinput with a typed word that can be changed a textinput with a translation
+        that can be changed and a button to rename a note.\n
+        additionally accepts the name of the word `word` and the translation `translate`,
+        used to notify when the selected note has been renamed.
+    """
+
     def __init__(self, word, translate, **kwargs):
         super(RenameNotesPopup, self).__init__(**kwargs)
-        self.floatlayout = FloatLayout()
 
+        self.floatlayout = FloatLayout()
         self.content = self.floatlayout
 
         self.label_footnote = Label(
@@ -224,10 +266,17 @@ class RenameNotesPopup(Popup):
 
 
 class ErrorPopup(Popup):
+    """
+    ErrorPopup:
+        class inherited from `Popup`,\n
+        which contains an error warning label and an OK button.\n
+        used to notify when a field is not filled.
+    """
+
     def __init__(self, **kwargs):
         super(ErrorPopup, self).__init__(**kwargs)
-        self.floatlayout = FloatLayout()
 
+        self.floatlayout = FloatLayout()
         self.content = self.floatlayout
 
         self.label_warning = Label(
@@ -250,10 +299,17 @@ class ErrorPopup(Popup):
 
 
 class BackPopup(Popup):
+    """
+    BackPopup:
+        class inherited from `Popup`,\n
+        which contains a warning about saving settings and an OK button.\n
+        used to notify when the user wants to leave the page without saving the settings.
+    """
+
     def __init__(self, **kwargs):
         super(BackPopup, self).__init__(**kwargs)
-        self.floatlayout = FloatLayout()
 
+        self.floatlayout = FloatLayout()
         self.content = self.floatlayout
 
         self.label_warning = Label(
@@ -282,11 +338,18 @@ class BackPopup(Popup):
 
 
 class DictBubble(ModalView):
+    """
+    DictBubble:
+        class inherited from `ModalView`,\n
+        which contains a rename button and a delete button.\n
+        used to call the rename or delete windows when the user wants to rename or delete a note or theme.
+    """
+
     def __init__(self, **kwargs):
         super(DictBubble, self).__init__(**kwargs)
-        self.bubble = Bubble(orientation="horizontal")
 
-        layout = BoxLayout(orientation="horizontal")
+        self.bubble = Bubble(orientation="horizontal")
+        box_layout = BoxLayout(orientation="horizontal")
 
         self.button_rename = BubbleButton(text="Rename")
         self.button_rename.bind(on_press=self.dismiss)
@@ -294,19 +357,27 @@ class DictBubble(ModalView):
         self.button_delete = BubbleButton(text="Delete")
         self.button_delete.bind(on_press=self.dismiss)
 
-        layout.add_widget(self.button_rename)
-        layout.add_widget(self.button_delete)
+        box_layout.add_widget(self.button_rename)
+        box_layout.add_widget(self.button_delete)
 
-        self.bubble.add_widget(layout)
+        self.bubble.add_widget(box_layout)
+
         self.add_widget(self.bubble)
 
 
 class RightAnswerPopup(Popup):
+    """
+    RightAnswerPopup:
+        class inherited from `Popup`,\n
+        which contains a button.\n
+        used to alert the user to the correct answer.
+    """
+
     def __init__(self, **kwargs):
         super(RightAnswerPopup, self).__init__(**kwargs)
+
         self.auto_dismiss = False
         self.floatlayout = FloatLayout()
-
         self.content = self.floatlayout
 
         self.button = RoundedButton(
@@ -321,11 +392,18 @@ class RightAnswerPopup(Popup):
 
 
 class WrongAnswerPopup(Popup):
+    """
+    WrongAnswerPopup:
+        class inherited from `Popup`,\n
+        which contains a button.\n
+        used to notify the user of an wrong answer.
+    """
+
     def __init__(self, correct_word, **kwargs):
         super(WrongAnswerPopup, self).__init__(**kwargs)
+
         self.auto_dismiss = False
         self.floatlayout = FloatLayout()
-
         self.content = self.floatlayout
 
         self.label_incorrect_word = Label(
@@ -349,6 +427,10 @@ class WrongAnswerPopup(Popup):
 
 
 def popup_empty():
+    """
+    popup_empty:
+        title="The field is not filled"
+    """
     popup = ErrorPopup(
         title="The field is not filled",
         title_size=18,
@@ -361,6 +443,11 @@ def popup_empty():
 
 
 def popup_same_theme():
+    """
+    popup_same_theme:
+        title="Repetition error"\n
+        text="This theme already exists"
+    """
     popup = ErrorPopup(
         title="Repetition error",
         title_size=18,
@@ -374,6 +461,11 @@ def popup_same_theme():
 
 
 def popup_settings_error():
+    """
+    popup_same_theme:
+        title="Settings error"\n
+        text="Checkbox is not selected"
+    """
     popup = ErrorPopup(
         title="Settings error",
         title_size=18,
@@ -383,4 +475,4 @@ def popup_settings_error():
         separator_color=[0.0, 0.84, 0.64],
     )
     popup.open()
-    popup.label_warning.text = "Сheckbox is not selected"
+    popup.label_warning.text = "Checkbox is not selected"

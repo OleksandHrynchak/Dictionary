@@ -1,31 +1,44 @@
-import random, time
+import random
 
 
 from kivy.uix.screenmanager import ScreenManager, NoTransition
 
-from Frontend.popups import (
-    popup_empty,
-    popup_same_theme,
-    popup_settings_error,
-)
-from Database.database_operations import (
+from Frontend.popups import popup_empty, popup_same_theme
+from Database.SQLite3.database_operations import (
     themes_from_db,
     call_settings,
     output_settings_notes,
 )
 
+"""from Database.MySQL.database_operations import (
+    themes_from_db,
+    call_settings,
+    output_settings_notes,
+)"""
+
 
 # log (how pages one(Repetition) or two(Check))
 def page_selection(button):
+    """
+    page_selection:
+        opens the screen according to the saved settings.
+    """
     if call_settings()[2]:
-        set_screen("pageStartTwo")
+        # set_screen opens the selected screen
+        set_screen("pageCheck")
     elif call_settings()[3]:
-        set_screen("pageStartOne")
+        # set_screen opens the selected screen
+        set_screen("pageRepeat")
     else:
+        # set_screen opens the selected screen
         set_screen("menu")
 
 
-def random_or_successively():
+def random_or_successively() -> list:
+    """
+    random_or_successively:
+        displays a shuffled or successively list according to the settings.
+    """
     randomly = call_settings()[6]
     successively = call_settings()[7]
     if randomly:
@@ -34,7 +47,11 @@ def random_or_successively():
         return show_successively_notes()
 
 
-def show_random_notes():
+def show_random_notes() -> list:
+    """
+    show_random_notes:
+        displays a shuffled list according to the saved setting.
+    """
     word = call_settings()[4]
     translate = call_settings()[5]
     if word and translate:
@@ -45,7 +62,11 @@ def show_random_notes():
         return shuffle_list(separation_translate())
 
 
-def show_successively_notes():
+def show_successively_notes() -> list:
+    """
+    show_successively_notes:
+        displays a successively list according to the saved setting.
+    """
     word = call_settings()[4]
     translate = call_settings()[5]
     if word and translate:
@@ -56,44 +77,64 @@ def show_successively_notes():
         return separation_translate()
 
 
-def separation_word():
+def separation_word() -> list:
+    """
+    separation_word:
+        output a successively list of words.
+    """
     word_list = [word for word in output_settings_notes()[::2]]
     return word_list
 
 
-def separation_translate():
+def separation_translate() -> list:
+    """
+    separation_translate:
+        utput a successively list of translations.
+    """
     translate_list = [word for word in output_settings_notes()[1::2]]
     return translate_list
 
 
-def separation_notes_successively():
+def separation_notes_successively() -> list:
+    """
+    separation_notes_successively:
+        output a successively, unmixed list, the content of which is sequentially followed by the word translation.
+    """
     sorted_list_a = [
-        list(word_translate(a, output_settings_notes()))[0]
-        if i % 2 == 0
-        else list(word_translate(a, output_settings_notes()))[1]
-        for i, a in enumerate(output_settings_notes()[::2])
+        list(word_translate(word, output_settings_notes()))[0]
+        if index % 2 == 0
+        else list(word_translate(word, output_settings_notes()))[1]
+        for index, word in enumerate(output_settings_notes()[::2])
     ]
     sorted_list_b = [
-        list(word_translate(a, output_settings_notes()))[0]
-        if i % 2 != 0
-        else list(word_translate(a, output_settings_notes()))[1]
-        for i, a in enumerate(output_settings_notes()[::2])
+        list(word_translate(word, output_settings_notes()))[0]
+        if index % 2 != 0
+        else list(word_translate(word, output_settings_notes()))[1]
+        for index, word in enumerate(output_settings_notes()[::2])
     ]
     separation_list = sorted_list_a + sorted_list_b
     return separation_list
 
 
-def separation_notes_randomly():
+def separation_notes_randomly() -> list:
+    """
+    separation_notes_randomly:
+        sorts the shuffled list so that the list looks like the word translation.
+    """
     sorted_list_random = [
-        list(word_translate(a, output_settings_notes()))[0]
-        if i % 2 == 0
-        else list(word_translate(a, output_settings_notes()))[1]
-        for i, a in enumerate(shuffle_list(output_settings_notes()))
+        list(word_translate(word, output_settings_notes()))[0]
+        if index % 2 == 0
+        else list(word_translate(word, output_settings_notes()))[1]
+        for index, word in enumerate(shuffle_list(output_settings_notes()))
     ]
     return sorted_list_random
 
 
-def shuffle_list(lst):
+def shuffle_list(lst: list) -> list:
+    """
+    shuffle_list:
+        shuffles the elements of the resulting list.
+    """
     random_lst = lst.copy()
     random.shuffle(random_lst)
     return random_lst
@@ -102,7 +143,7 @@ def shuffle_list(lst):
 # error
 
 
-def field_empty(word):
+def field_empty(word: str) -> bool:
     """
     field_empty:
         checks if the field is not empty.
@@ -114,7 +155,7 @@ def field_empty(word):
         return False
 
 
-def fields_empty(word, translate, function):
+def fields_empty(word: str, translate: str, function):
     """
     fields_empty:
         checks if the fields are not empty.
@@ -128,7 +169,7 @@ def fields_empty(word, translate, function):
         popup_empty()
 
 
-def same_theme(word):
+def same_theme(word: str) -> bool:
     """
     same_theme:
         checks whether the selected word is not a list item.
@@ -140,7 +181,7 @@ def same_theme(word):
         return False
 
 
-def check_themes(word, function):
+def check_themes(word: str, function):
     """
     check_themes:
         field_empty checks if the field is not empty.
@@ -149,19 +190,16 @@ def check_themes(word, function):
     """
     if not field_empty(word):
         popup_empty()
-        return
     elif not same_theme(word):
         popup_same_theme()
-        return
     else:
         function(word)
-        return
 
 
-def word_translate(word, lst):
+def word_translate(word: str, lst: list) -> tuple:
     """
     word_translate:
-        checks whether the selected word is a word or a translation and outputs its pair to it.
+        checks whether the highlighted word is a 'word' or a 'translation' and outputs the word and its pair.
     """
     index = lst.index(word)
     if index % 2 == 0:
@@ -170,7 +208,11 @@ def word_translate(word, lst):
         return lst[index - 1], word
 
 
-def translation_pair(word, lst):
+def translation_pair(word: str, lst: list) -> str:
+    """
+    translation_pair:
+        checks whether the highlighted word is "word" or "translation" and outputs its pair.
+    """
     index = lst.index(word)
     if index % 2 == 0:
         return lst[index + 1]
@@ -178,10 +220,10 @@ def translation_pair(word, lst):
         return lst[index - 1]
 
 
-def set_screen(name_screen):
+def set_screen(name_screen: str):
     """
     set_screen:
-        adds all pages and names them
+        adds all pages and names them.
     """
     sm.current = name_screen
 

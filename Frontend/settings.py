@@ -12,36 +12,55 @@ from kivy.uix.spinner import Spinner
 from kivy.uix.scrollview import ScrollView
 
 
-from Frontend.background import *
+from Frontend.background import KV
 from Frontend.moduls import RoundedButton, CustomLabel
-from Frontend.popups import *
-from Backend.switching import *
-from Database.database_operations import themes_from_db
+from Frontend.popups import BackPopup, popup_settings_error
+from Backend.switching import call_settings, set_screen, sm
+from Database.SQLite3.database_operations import (
+    themes_from_db,
+    id_settings_theme,
+    change_save,
+)
+
+# To work with Mysql, uncomment the import from the mysql folder and comment from SQLite 3.
+# from Database.MySQL.database_operations import themes_from_db
 
 
 class PageSettings(Screen):
+    """
+    PageSettings:
+        Class inherited from `Screen`,\n
+        which represents the screen for application settings.
+    """
+
     def __init__(self, **kwargs):
         super(PageSettings, self).__init__(**kwargs)
+        # Main layout.
         relativelayout = RelativeLayout()
+        # layout for settings.
         floatlayout = FloatLayout()
+        # Layout for a spinner.
         boxlayout = BoxLayout(
             size_hint_y=1,
             orientation="horizontal",
             size_hint=[0.7, 0.30],
             pos_hint={"x": 0.15, "y": 0.7},
         )
+        # layout for checkboxes and their labels, is part of the settings.
         gridlayout = GridLayout(
             cols=2,
             spacing=[20, 0],
             row_force_default=True,
-            row_default_height=45,
+            row_default_height=50,
             size_hint=[0.6, 0.5],
             pos_hint={"x": 0.2, "y": 0.37},
         )
+        # Main scroll view.
         scrollview = ScrollView(
             size_hint=(1, 0.7),
             pos_hint={"x": 0, "y": 0.16},
         )
+        # Background.
         self.root = Builder.load_string(KV)
         # --------------------------------------------------------------------------------------
         self.spinner = Spinner(
@@ -51,6 +70,7 @@ class PageSettings(Screen):
             pos_hint={"x": 0.15, "y": 0.7},
             values=themes_from_db(),
         )
+        # id_settings_theme defines id theme.
         self.spinner.bind(text=id_settings_theme)
         self.spinner.dropdown_cls.max_height = self.spinner.height * 2 + 4
         # -------------------------------------------------------------------------------------
@@ -80,6 +100,7 @@ class PageSettings(Screen):
             active=True,
         )
         gridlayout.add_widget(self.checkbox_check)
+        # force_checkbox_check is responsible for ensuring that checkboxes do not remain unactivated.
         self.checkbox_check.bind(on_press=self.force_checkbox_check)
 
         gridlayout.add_widget(
@@ -96,6 +117,7 @@ class PageSettings(Screen):
             size_hint_x=None,
         )
         gridlayout.add_widget(self.checkbox_repeat)
+        # force_checkbox_check is responsible for ensuring that checkboxes do not remain unactivated.
         self.checkbox_repeat.bind(on_press=self.force_checkbox_check)
 
         gridlayout.add_widget(
@@ -137,6 +159,7 @@ class PageSettings(Screen):
             size_hint_x=None,
         )
         gridlayout.add_widget(self.checkbox_randomly)
+        # force_checkbox_check is responsible for ensuring that checkboxes do not remain unactivated.
         self.checkbox_randomly.bind(on_press=self.force_checkbox_check)
 
         gridlayout.add_widget(
@@ -153,6 +176,7 @@ class PageSettings(Screen):
             active=True,
         )
         gridlayout.add_widget(self.checkbox_successively)
+        # force_checkbox_check is responsible for ensuring that checkboxes do not remain unactivated.
         self.checkbox_successively.bind(on_press=self.force_checkbox_check)
 
         gridlayout.add_widget(
@@ -174,6 +198,7 @@ class PageSettings(Screen):
             value_track_color=[0.41, 1, 0.96, 1],
         )
         floatlayout.add_widget(self.slider_time)
+        # slider_value
         self.slider_time.bind(value=self.slider_value)
 
         self.text_input_time = TextInput(
@@ -190,10 +215,12 @@ class PageSettings(Screen):
             cursor_color=[1, 1, 1, 1],
         )
         floatlayout.add_widget(self.text_input_time)
-
-        self.text_input_time.bind(text=self.text_input_number)  # комент
+        # txt_input_number passes the textinput value to the slider.
+        self.text_input_time.bind(text=self.text_input_number)
+        # text_input_max_number sets the maximum value of the input text.
         self.text_input_time.bind(text=self.text_input_max_number)
-        self.text_input_time.bind(text=self.text_input_min_number)  # комент
+        # text_input_min_number sets the minimum value of the input text.
+        self.text_input_time.bind(text=self.text_input_min_number)
 
         boxlayout.add_widget(self.spinner)
         floatlayout.add_widget(gridlayout)
@@ -205,22 +232,44 @@ class PageSettings(Screen):
         self.update_settings()
 
     def slider_value(self, spinner, value):
+        """
+        slider_value:
+            passes the value of the text input to the slider.
+        """
+        print(type(value))
         self.text_input_time.text = str(value)
 
-    def text_input_number(self, textinput, sec):
+    def text_input_number(self, text_input, sec: str):
+        """
+        text_input_number:
+            passes slider value to textinput.
+        """
         self.slider_time.value = int("0" + sec)
 
-    def text_input_max_number(self, textinput, sec):
+    def text_input_max_number(self, textinput, sec: str):
+        """
+        text_input_max_number:
+            creates a limit of the maximum number for entering into the textinput.
+        """
         max_sec = 60
         if int("0" + sec) > max_sec:
             self.text_input_time.text = str(max_sec)
 
-    def text_input_min_number(self, textinput, sec):
+    def text_input_min_number(self, textinput, sec: str):
+        """
+        text_input_min_number:
+            creates a limit on the minimum number to enter in textinput.
+        """
         min_sec = 1
         if int("0" + sec) < min_sec:
             self.text_input_time.text = str(min_sec)
 
     def force_checkbox_check(self, checkbox):
+        """
+        force_checkbox_check:
+            is responsible for ensuring that the checkboxes do not remain unactivated,
+            one of the checkboxes of the group must always be activated.
+        """
         if checkbox == self.checkbox_check:
             self.checkbox_repeat.active = not checkbox.active
         elif checkbox == self.checkbox_repeat:
@@ -232,6 +281,10 @@ class PageSettings(Screen):
             self.checkbox_randomly.active = not checkbox.active
 
     def update_settings(self):
+        """
+        update_settings:
+            updates all settings values.
+        """
         self.spinner.text = call_settings()[1]
         self.checkbox_check.active = bool(call_settings()[2])
         self.checkbox_repeat.active = bool(call_settings()[3])
@@ -241,7 +294,11 @@ class PageSettings(Screen):
         self.checkbox_successively.active = bool(call_settings()[7])
         self.text_input_time.text = str(call_settings()[8])
 
-    def check_settings(self):
+    def check_settings(self) -> dict:
+        """
+        check_settings:
+            reates a dictionary with the current setting values.
+        """
         settings = {
             "theme": str(self.spinner.text),
             "verify": self.checkbox_check.active,
@@ -255,13 +312,24 @@ class PageSettings(Screen):
         return settings
 
     def save_settings(self, button):
+        """
+        save_settings:
+            updates the settings in the database, checks whether one of
+            the world or translate checkboxes is activated,
+            if they are not activated, then displays a warning.
+        """
         if not self.checkbox_word.active and not self.checkbox_translate.active:
             popup_settings_error()
         else:
             change_save(self.check_settings())
 
     def save_check(self, button):
+        """
+        save_check:
+            checks whether the settings are saved in the database.
+        """
         if tuple(self.check_settings().values()) == call_settings()[1:]:
+            # set_screen opens the selected screen
             set_screen("menu")
         else:
             self.popup_back()
@@ -275,17 +343,29 @@ class PageSettings(Screen):
         )
         self.popup_choise.open()
         button_agree = self.popup_choise.button_agree
+        # save_close saves the settings in the database and takes the user to the menu screen
         button_agree.bind(on_press=self.save_close)
         button_cancel = self.popup_choise.button_cancel
+        # back_close takes the user to the menu screen without saving the settings to the database.
         button_cancel.bind(on_press=self.back_close)
 
     def save_close(self, button):
+        """
+        save_close:
+            saves the settings in the database, takes the user to the menu screen
+            and turns off the message window.
+        """
         self.save_settings(button)
         set_screen("menu")
         self.update_settings()
         self.popup_choise.dismiss()
 
     def back_close(self, button):
+        """
+        back_close:
+            does not save the settings in the database, takes the user to the menu screen
+            and turns off the message window.
+        """
         set_screen("menu")
         self.update_settings()
         self.popup_choise.dismiss()

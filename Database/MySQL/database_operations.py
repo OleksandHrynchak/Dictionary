@@ -2,6 +2,10 @@ import pymysql
 
 
 def connect():
+    """
+    connect:
+        Establishes a connection to a MySQL database and returns a connection object.
+    """
     try:
         connection = pymysql.connect(
             host="localhost",
@@ -16,7 +20,11 @@ def connect():
         print(f"Error executing INSERT query: {error}")
 
 
-def add_theme(text_value):
+def add_theme(text_value: str):
+    """
+    add_theme:
+        takes the theme name and writes it to the database in the themes table.
+    """
     connection = connect()
     try:
         with connection.cursor() as cursor:
@@ -28,7 +36,11 @@ def add_theme(text_value):
         connection.close()
 
 
-def themes_from_db():
+def themes_from_db() -> list:
+    """
+    themes_from_db:
+        retrieves the themes names from the database and returns them as a list.
+    """
     connection = connect()
     try:
         with connection.cursor() as cursor:
@@ -42,7 +54,12 @@ def themes_from_db():
         connection.close()
 
 
-def id_theme(spinner, theme):
+def id_theme(spinner, theme: str):
+    """
+    id_theme:
+        takes the name of the theme and outputs its id in the global variable `theme_id`.\n
+        used on the `Theme` screen.
+    """
     connection = connect()
     try:
         with connection.cursor() as cursor:
@@ -56,7 +73,13 @@ def id_theme(spinner, theme):
         connection.close()
 
 
-def output_notes():
+def output_notes() -> list:
+    """
+    output_notes:
+        outputs the words and translation according to the theme id from the `Notes` table,
+        using the 'theme_id' change.\n
+        used on the `Theme` screen.
+    """
     connection = connect()
     try:
         with connection.cursor() as cursor:
@@ -80,7 +103,12 @@ def output_notes():
         connection.close()
 
 
-def id_settings_theme(spinner, theme):
+def id_settings_theme(spinner, theme: str):
+    """
+    id_settings_theme:
+        takes the name of the theme and outputs its id in the global variable `settings_theme_id`.\n
+        used on the `Settings` screen.
+    """
     connection = connect()
     try:
         with connection.cursor() as cursor:
@@ -94,7 +122,13 @@ def id_settings_theme(spinner, theme):
         connection.close()
 
 
-def output_settings_notes():
+def output_settings_notes() -> list:
+    """
+    output_settings_notes:
+        outputs the words and translation according to the theme id from the `Notes` table,
+        using the 'settings_theme_id' change.\n
+        used on the `Settings` screen.
+    """
     connection = connect()
     try:
         with connection.cursor() as cursor:
@@ -118,7 +152,11 @@ def output_settings_notes():
         connection.close()
 
 
-def save_word_and_translate(word, translate):
+def save_word_and_translate(word: str, translate: str):
+    """
+    save_word_and_translate:
+        takes two values `word` and `translation` and stores them in the `Notes` table according to the selected theme.
+    """
     connection = connect()
     try:
         with connection.cursor() as cursor:
@@ -133,7 +171,11 @@ def save_word_and_translate(word, translate):
         connection.close()
 
 
-def update_theme(update):
+def update_theme(update: str):
+    """
+    save_word_and_translate:
+        takes `update` which new name of the selected theme using `theme_id` and renames it.
+    """
     connection = connect()
     try:
         with connection.cursor() as cursor:
@@ -148,6 +190,10 @@ def update_theme(update):
 
 
 def delete_theme():
+    """
+    delete_theme:
+        removes the theme selected by `theme_id`.
+    """
     connection = connect()
     try:
         with connection.cursor() as cursor:
@@ -160,6 +206,10 @@ def delete_theme():
 
 
 def delete_notes():
+    """
+    delete_theme:
+        deletes all notes where id equals `theme_id`.
+    """
     connection = connect()
     try:
         with connection.cursor() as cursor:
@@ -171,7 +221,14 @@ def delete_notes():
         connection.close()
 
 
-def update_note(up_word, up_translate, old_word, old_translate):
+def update_note(up_word: str, up_translate: str, old_word: str, old_translate: str):
+    """
+    `up_word` -> `update_word`\n
+    `up_translate` -> `update_translate`\n
+
+    update_note:
+        accepts new 'words' and 'translates' and old 'words' and 'translations' and replaces old ones with new ones.
+    """
     connection = connect()
     try:
         with connection.cursor() as cursor:
@@ -186,7 +243,11 @@ def update_note(up_word, up_translate, old_word, old_translate):
         connection.close()
 
 
-def delete_note(word, translate):
+def delete_note(word: str, translate: str):
+    """
+    delete_note:
+        takes the word and translation and removes them from the selected `theme_id`.
+    """
     connection = connect()
     try:
         with connection.cursor() as cursor:
@@ -201,7 +262,11 @@ def delete_note(word, translate):
         connection.close()
 
 
-def change_save(settings):
+def change_save(settings: dict):
+    """
+    change_save:
+        takes the dictionary with the selected settings and updates it in the `Settings` table.
+    """
     connection = connect()
     try:
         with connection.cursor() as cursor:
@@ -223,7 +288,11 @@ def change_save(settings):
         connection.close()
 
 
-def call_settings():
+def call_settings() -> tuple:
+    """
+    change_save:
+        outputs a tuple with stored values from the `Settings` table.
+    """
     connection = connect()
     try:
         with connection.cursor() as cursor:

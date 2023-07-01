@@ -1,20 +1,26 @@
 from kivymd.app import MDApp
 
-from Frontend.menu import *
-from Frontend.start_one import *
-from Frontend.start_two import *
-from Frontend.setings import *
-from Frontend.themes import *
-from Frontend.background import *
-
-from Backend.switching import *
+from Frontend.menu import sm
+from Frontend.repeat import sm
+from Frontend.check import sm
+from Frontend.settings import sm
+from Frontend.themes import sm
 
 
 class Dictionary(MDApp):
+    """
+    Dictionary:
+        The main application class that inherits from `MDApp`.
+    """
+
     def __init__(self, **kvargs):
         super(Dictionary, self).__init__(**kvargs)
 
     def build(self):
+        """
+        build:
+            Method that returns the root widget of the application.
+        """
         return sm
 
 

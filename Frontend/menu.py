@@ -4,15 +4,23 @@ from kivy.uix.screenmanager import Screen
 from kivy.uix.floatlayout import FloatLayout
 
 
-from Frontend.background import *
+from Frontend.background import KV
 from Frontend.moduls import RoundedButton
-from Backend.switching import *
+from Backend.switching import page_selection, set_screen, sm
 
 
 class Menu(Screen):
+    """
+    Menu:
+        Class inherited from `Screen`,\n
+        which represents the main menu screen of the application.
+    """
+
     def __init__(self, **kwargs):
         super(Menu, self).__init__(**kwargs)
+        # Main layout.
         floatlayout = FloatLayout()
+        # Background.
         self.root = Builder.load_string(KV)
 
         self.button_start = RoundedButton(
@@ -22,25 +30,26 @@ class Menu(Screen):
             pos_hint={"x": 0.15, "y": 0.34},
         )
         floatlayout.add_widget(self.button_start)
+        # page selection displays the screen that was selected in the settings.
         self.button_start.bind(on_press=page_selection)
-
+        # set_screen opens the selected screen
         self.button_setings = RoundedButton(
             text="Settings",
+            on_press=lambda x: set_screen("pageSettings"),
             font_size=20,
             size_hint=(0.7, 0.08),
             pos_hint={"x": 0.15, "y": 0.22},
         )
         floatlayout.add_widget(self.button_setings)
-        self.button_setings.bind(on_press=lambda x: set_screen("pageSettings"))
-
+        # set_screen opens the selected screen
         self.button_theme = RoundedButton(
             text="Thems",
+            on_press=lambda x: set_screen("pageTemes"),
             font_size=20,
             size_hint=(0.7, 0.08),
             pos_hint={"x": 0.15, "y": 0.1},
         )
         floatlayout.add_widget(self.button_theme)
-        self.button_theme.bind(on_press=lambda x: set_screen("pageTemes"))
 
         self.add_widget(self.root)
         self.add_widget(floatlayout)
