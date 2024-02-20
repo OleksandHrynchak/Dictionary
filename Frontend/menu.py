@@ -2,7 +2,7 @@ from kivy.lang import Builder
 
 from kivy.uix.screenmanager import Screen
 from kivy.uix.floatlayout import FloatLayout
-
+from kivy.metrics import sp
 
 from Frontend.background import KV
 from Frontend.moduls import RoundedButton
@@ -22,21 +22,21 @@ class Menu(Screen):
         floatlayout = FloatLayout()
         # Background.
         self.root = Builder.load_string(KV)
-
+        # page_selection displays the screen that was selected in the settings.
         self.button_start = RoundedButton(
             text="Start",
-            font_size=20,
+            font_size=sp(20),
             size_hint=(0.7, 0.08),
             pos_hint={"x": 0.15, "y": 0.34},
+            on_press=page_selection,
         )
         floatlayout.add_widget(self.button_start)
-        # page selection displays the screen that was selected in the settings.
-        self.button_start.bind(on_press=page_selection)
+
         # set_screen opens the selected screen
         self.button_setings = RoundedButton(
             text="Settings",
             on_press=lambda x: set_screen("pageSettings"),
-            font_size=20,
+            font_size=sp(20),
             size_hint=(0.7, 0.08),
             pos_hint={"x": 0.15, "y": 0.22},
         )
@@ -44,8 +44,8 @@ class Menu(Screen):
         # set_screen opens the selected screen
         self.button_theme = RoundedButton(
             text="Thems",
-            on_press=lambda x: set_screen("pageTemes"),
-            font_size=20,
+            on_press=lambda x: set_screen("pageThemes"),
+            font_size=sp(20),
             size_hint=(0.7, 0.08),
             pos_hint={"x": 0.15, "y": 0.1},
         )

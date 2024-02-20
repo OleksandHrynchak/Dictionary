@@ -9,6 +9,7 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.spinner import Spinner
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.button import Button
+from kivy.metrics import sp
 
 
 from Frontend.background import KV
@@ -41,20 +42,6 @@ from Database.SQLite3.database_operations import (
     delete_note,
 )
 
-# To work with Mysql, uncomment the import from the mysql folder and comment from SQLite 3.
-"""from Database.MySQL.database_operations import (
-    add_theme,
-    themes_from_db,
-    id_theme,
-    save_word_and_translate,
-    output_notes,
-    update_theme,
-    delete_theme,
-    delete_notes,
-    update_note,
-    delete_note,
-)"""
-
 
 class PageThemes(Screen):
     """
@@ -82,7 +69,6 @@ class PageThemes(Screen):
         self.scrollview = ScrollView(
             size_hint=(1, 0.8),
             pos_hint={"x": 0, "y": 0.05},
-            # scroll_y=1
         )
         # Scroll view to display words in gridlayout.
         self.scrollview_for_notes = ScrollView(
@@ -93,10 +79,9 @@ class PageThemes(Screen):
         # --------------------------------------------------------------------------------------
         self.spinner = Spinner(
             text="Select a themes",
-            font_size=18,
+            font_size=sp(18),
             size_hint=(0.7, 0.30),
             pos_hint={"x": 0.15, "y": 0.7},
-            values=themes_from_db(),
         )
         # id_theme defines id theme.
         self.spinner.bind(text=id_theme)
@@ -104,9 +89,9 @@ class PageThemes(Screen):
         self.spinner.bind(text=self.range_notes)
         # start_timer_for_themes calls a bubble if the button is held down for more than 1 second.
         self.spinner.bind(on_press=self.start_timer_for_themes)
-        # stop_timer_for_themes cancels the start_timer_for_notes event if
+        # stop_timer_for_theme cancels the start_timer_for_notes event if
         # the button has not been pressed for more than one second.
-        self.spinner.bind(on_release=self.stop_timer_for_themes)
+        self.spinner.bind(on_release=self.stop_timer_for_theme)
         self.close_spiner = None
         self.spinner.dropdown_cls.max_height = self.spinner.height * 2 + 5
         # -------------------------------------------------------------------------------------
@@ -116,7 +101,7 @@ class PageThemes(Screen):
                 text="<--",
                 on_press=lambda page: set_screen("menu"),
                 on_release=self.update_scroll_views,
-                font_size=20,
+                font_size=sp(20),
                 size_hint=(0.16, 0.08),
                 pos_hint={"x": 0.04, "y": 0.89},
             )
@@ -126,7 +111,7 @@ class PageThemes(Screen):
             RoundedButton(
                 text="Add a theme",
                 on_press=self.popup_add_themes,
-                font_size=20,
+                font_size=sp(20),
                 size_hint=(0.7, 0.07),
                 pos_hint={"x": 0.15, "y": 0.92},
             )
@@ -135,10 +120,10 @@ class PageThemes(Screen):
         self.text_input_word = TextInput(
             hint_text="Word",
             hint_text_color=[0.55, 0.55, 0.55, 1],
-            font_size="18",
+            font_size=sp(18),
             halign="center",
             size_hint=(0.38, 0.08),
-            pos_hint={"x": 0.1, "y": 0.10},
+            pos_hint={"x": 0.1, "y": 0.12},
             foreground_color=[1, 1, 1, 1],
             background_color=[0.29, 0.29, 0.29],
             cursor_color=[1, 1, 1, 1],
@@ -148,10 +133,10 @@ class PageThemes(Screen):
         self.text_input_translate = TextInput(
             hint_text="Translate",
             hint_text_color=[0.55, 0.55, 0.55, 1],
-            font_size="18",
+            font_size=sp(18),
             halign="center",
             size_hint=(0.38, 0.08),
-            pos_hint={"x": 0.5, "y": 0.10},
+            pos_hint={"x": 0.5, "y": 0.12},
             foreground_color=[1, 1, 1, 1],
             background_color=[0.29, 0.29, 0.29],
             cursor_color=[1, 1, 1, 1],
@@ -160,9 +145,9 @@ class PageThemes(Screen):
 
         self.button_add_note = RoundedButton(
             text="Add a word",
-            font_size=20,
+            font_size=sp(20),
             size_hint=(0.6, 0.07),
-            pos_hint={"x": 0.2, "y": 0},
+            pos_hint={"x": 0.2, "y": 0.02},
         )
         self.floatlayout.add_widget(self.button_add_note)
         # fields_empty checks if the fields are not empty.
@@ -184,9 +169,13 @@ class PageThemes(Screen):
         self.add_widget(self.relativelayout)
 
     def popup_add_themes(self, button):
+        """
+        popup_add_themes
+            Causes a popup to add a new theme.
+        """
         self.popup_new_theme = AddThemePopup(
             title="Add a theme",
-            title_size=18,
+            title_size=sp(18),
             size_hint=(0.9, 0.7),
             pos_hint={"x": 0.05, "y": 0.15},
             separator_height=3,
@@ -204,45 +193,50 @@ class PageThemes(Screen):
     def add_new_theme(self, new_theme: str):
         """
         add_new_theme:
-            add_theme transfers the word to the database
-            themes_from_db retrieves themes from the database
+            Adds a new theme to the database.
         """
+        # add_theme transfers the word to the database
         add_theme(new_theme)
+        # themes_from_db retrieves themes from the database.
         self.spinner.values = themes_from_db()
         self.spinner.text = themes_from_db()[-1]
+
         self.popup_new_theme.dismiss()
 
     def click_button_add_note(self, word: str, translate: str):
         """
         click_button_add_note:
-            save_word_and_translate transfers the word and translations to the database.
-            range_notes displays the word and translation in the grid layout.
+            Adds a new note to the database.
         """
+        # save_word_and_translate transfers the word and translations to the database.
         save_word_and_translate(word, translate)
         self.text_input_word.text = ""
         self.text_input_translate.text = ""
+        # range_notes displays the word and translation in the grid layout.
         self.range_notes(spinner=None, name_theme=None)
         self.scrollview_for_notes.scroll_y = 0
 
     def range_notes(self, spinner, name_theme: str):
         """
         range_notes:
-            output_notes if the theme is not empty outputs a list of words and translations
-            from the selected theme, if the empty function is not executed.
+            Displays notes for the user in a table.
         """
         self.gridlayout.clear_widgets()
+        # Output_notes if the theme is not empty outputs a list of words and translations
+        # from the selected theme, if the empty function is not executed.
         self.notes = output_notes()
         if self.notes != None:
             for word in self.notes:
                 self.buttons_notes = Button(
-                    font_size=18,
+                    font_size=sp(18),
                     text=word,
-                    height=50,
+                    halign="center",
                     size_hint_y=None,
-                    text_size=(None, None),
                     background_color=[0, 0, 0, 0],
                     background_normal="",
                 )
+                self.buttons_notes.height = self.scrollview_for_notes.height / 8
+                self.buttons_notes.text_size = (self.button_text(), None)
                 self.gridlayout.add_widget(self.buttons_notes)
                 # start_timer_for_notes calls a bubble if the button is held down for more than 1 second.
                 self.buttons_notes.bind(on_press=self.start_timer_for_notes)
@@ -254,27 +248,43 @@ class PageThemes(Screen):
         self.gridlayout.bind(minimum_height=self.gridlayout.setter("height"))
         self.scrollview_for_notes.scroll_y = 1
 
-    # start----------------function for notes
+    def button_text(self):
+        """
+        button_text:
+            Defines the width of the gridlayout column for the button text.
+        """
+        text_size_x = int((self.gridlayout.size[0] / 2) - 4)
+        return text_size_x
+
+    # <functions for notes>
+
     def start_timer_for_notes(self, button):
         """
         start_timer_for_notes:
-            Clock.schedule_once causes a bubble if the button has been pressed for more than 1 second.
+            Starts a timer for one second if the button is pressed and performs the entered function.
         """
+        # Clock.schedule_once causes a bubble if the button has been pressed for more than 1 second.
         Clock.schedule_once(self.show_bubble_for_notes, 1)
         self.button_note = button
 
     def stop_timer_for_notes(self, button):
         """
         stop_timer_for_notes:
-            Clock.unschedule cancels the bubble call if the button has been pressed for less than 1 second.
+            Stops the timer if the button has not been pressed for one second
+            and cancels the execution of the entered function.
         """
+        # Clock.unschedule cancels the bubble call if the button has been pressed for less than 1 second.
         Clock.unschedule(self.show_bubble_for_notes)
 
     def show_bubble_for_notes(self, second):
+        """
+        show_bubble_for_notes:
+            Calls a bubble to rename or delete notes.
+        """
         modalview_notes = DictBubble(
-            size_hint=(None, None),
+            size_hint=(0.2, 0.08),
             pos_hint={"x": 0.4, "y": 0.88},
-            size=[140, 50],
+            size_hint_min_x=200,
             overlay_color=[0, 0, 0, 0],
         )
         modalview_notes.bubble.show_arrow = False
@@ -289,9 +299,13 @@ class PageThemes(Screen):
         button_delete.bind(on_press=self.remove_for_note)
 
     def rename_for_note(self, bubble):
+        """
+        rename_for_note:
+            Causes a popup to rename the note.
+        """
         self.popup_rename_note = RenameNotesPopup(
             title="Renaming a note",
-            title_size=18,
+            title_size=sp(18),
             size_hint=(0.9, 0.7),
             pos_hint={"x": 0.05, "y": 0.15},
             separator_height=3,
@@ -315,19 +329,25 @@ class PageThemes(Screen):
         `up_word` -> `update_word`\n
         `up_translate` -> `update_translate`\n
         rename_note:
-            update_note updates the word and translation that
-                were selected and changed in the text fields.
-            range_notes displays the word and translation in the grid layout.
+            Rename the selected note.
 
         """
+        # update_note updates the word and translation that were selected and changed in the text fields.
         update_note(up_word, up_translate, self.word, self.translate)
+        # range_notes displays the word and translation in the grid layout.
+        position_note = self.scrollview_for_notes.scroll_y
         self.range_notes(spinner=None, name_theme=None)
+        self.scrollview_for_notes.scroll_y = position_note
         self.popup_rename_note.dismiss()
 
     def remove_for_note(self, bubble):
+        """
+        remove_for_note:
+            Causes a popup to remove the note.
+        """
         popup = DeleteNotePopup(
             title="Deleting a note",
-            title_size=18,
+            title_size=sp(18),
             size_hint=(0.9, 0.7),
             pos_hint={"x": 0.05, "y": 0.15},
             separator_height=3,
@@ -343,42 +363,52 @@ class PageThemes(Screen):
     def remove_note(self, button):
         """
         remove_note:
-            delete_note deletes the selected word and translation from the database.
-            range_notes displays the word and translation in the grid layout.
+            Deletes the selected note.
         """
+        # Delete_note deletes the selected word and translation from the database.
         delete_note(self.word, self.translate)
+        # range_notes displays the word and translation in the grid layout.
+        position_note = self.scrollview_for_notes.scroll_y
         self.range_notes(spinner=None, name_theme=None)
+        self.scrollview_for_notes.scroll_y = position_note
 
-    # end----------------function for notes
+    # </functions for notes>
 
-    # start ----------------function for thems
+    # <function for thems>
 
     def start_timer_for_themes(self, spinner):
         """
         start_timer_for_themes:
-            Clock.schedule_once causes a bubble if the button has been pressed for more than 1 second.
+            Starts a timer for one second if the button is pressed and performs the entered function.
         """
-        Clock.schedule_once(self.show_bubble_for_themes, 1)
+        # Clock.schedule_once causes a bubble if the button has been pressed for more than 1 second.
+        Clock.schedule_once(self.show_bubble_for_theme, 1)
 
-    def stop_timer_for_themes(self, spinner):
+    def stop_timer_for_theme(self, spinner):
         """
-        stop_timer_for_themes:
-            Clock.unschedule cancels the bubble call if the button has been pressed for less than 1 second.
-            (if self.close_spiner is not None) cancels the opening of the spinner.
+        stop_timer_for_theme:
+            Stops the timer if the button has not been pressed for one second
+            and cancels the execution of the entered function.
         """
-        Clock.unschedule(self.show_bubble_for_themes)
+        Clock.unschedule(self.show_bubble_for_theme)
+        # if self.close_spiner is not None cancels the opening of the spinner.
         if self.close_spiner is not None:
             self.spinner.is_open = True
 
-    def show_bubble_for_themes(self, spinner):
+    def show_bubble_for_theme(self, spinner):
+        """
+        show_bubble_for_theme:
+            Calls a bubble to rename or delete theme.
+        """
         modalview_theme = DictBubble(
-            size_hint=(None, None),
+            size_hint=(0.2, 0.08),
             pos_hint={"y": 0.7},
-            size=[140, 50],
+            size_hint_min_x=200,
             overlay_color=[0, 0, 0, 0],
         )
         modalview_theme.center_x = self.floatlayout.width / 2
         modalview_theme.open()
+
         button_rename = modalview_theme.button_rename
         button_delete = modalview_theme.button_delete
         # rename_for_theme opens a window where you can change the selected theme.
@@ -391,14 +421,18 @@ class PageThemes(Screen):
     def modal_dismiss(self):
         """
         modal_dismiss:
-            executed when the bubble closes and allows the spinner to open.
+            Executed when the bubble closes and allows the spinner to open.
         """
         self.close_spiner = None
 
     def rename_for_theme(self, bubble):
+        """
+        rename_for_theme:
+            Causes a popup to rename the theme.
+        """
         self.popup_rename_theme = RenamePopup(
             title="Renaming a theme",
-            title_size=18,
+            title_size=sp(18),
             size_hint=(0.9, 0.7),
             pos_hint={"x": 0.05, "y": 0.15},
             separator_height=3,
@@ -418,20 +452,26 @@ class PageThemes(Screen):
         """
         `up_theme` -> `update_theme`\n
         rename_theme:
-            index_theme assigns an index to the selected topic.
-            update_theme update_theme updates the selected theme.
-            themes_from_db retrieves themes from the database.
+            Rename the selected theme.
         """
+        # index_theme assigns an index to the selected topic.
         index_theme = themes_from_db().index(f"{self.spinner.text}")
+        # update_theme updates the selected theme.
         update_theme(up_theme)
+        # themes_from_db retrieves themes from the database.
         self.spinner.values = themes_from_db()
         self.spinner.text = themes_from_db()[index_theme]
+
         self.popup_rename_theme.dismiss()
 
     def remove_for_theme(self, bubble):
+        """
+        remove_for_theme:
+            Causes a popup to remove the theme.
+        """
         popup = DeletePopup(
             title="Deleting a theme",
-            title_size=18,
+            title_size=sp(18),
             size_hint=(0.9, 0.7),
             pos_hint={"x": 0.05, "y": 0.15},
             separator_height=3,
@@ -446,25 +486,35 @@ class PageThemes(Screen):
     def remove_theme(self, button):
         """
         remove_theme:
-            delete_notes deletes all words from the theme.
-            delete_theme deletes the selected theme.
-            themes_from_db retrieves themes from the database.
-
+            Deletes the selected theme.
         """
+        # delete_notes deletes all words from the theme.
         delete_notes()
+        # delete_theme deletes the selected theme.
         delete_theme()
+        # themes_from_db retrieves themes from the database.
         self.spinner.values = themes_from_db()
         self.spinner.text_autoupdate = True
+        if not self.spinner.text:
+            self.spinner.text = "Create a theme"
 
-    # end ----------------function for thems
+    # </function for thems>
 
     def update_scroll_views(self, button):
         """
         update_scroll_views:
-            executed when you go to the theme page and open all scroll views in their initial positions.
+            Executed when you go to the theme page and open all scroll views in their initial positions.
         """
         self.scrollview.scroll_y = 1
         self.scrollview_for_notes.scroll_y = 1
 
+    def on_enter(self):
+        """
+        on_enter:
+            Executed when the user enters the check screen.
+        """
+        if themes_from_db():
+            self.spinner.values = themes_from_db()
 
-sm.add_widget(PageThemes(name="pageTemes"))
+
+sm.add_widget(PageThemes(name="pageThemes"))

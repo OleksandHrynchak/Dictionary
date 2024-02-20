@@ -5,6 +5,7 @@ from kivy.uix.bubble import Bubble, BubbleButton
 from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
 from kivy.uix.boxlayout import BoxLayout
+from kivy.metrics import sp
 
 from Frontend.moduls import RoundedButton
 
@@ -25,7 +26,7 @@ class AddThemePopup(Popup):
 
         self.label_name_theme = Label(
             text="Enter a theme name:",
-            font_size="18",
+            font_size=sp(18),
             size_hint=(1, 0),
             pos_hint={"x": 0, "y": 0.85},
         )
@@ -34,7 +35,7 @@ class AddThemePopup(Popup):
         self.text_input_theme = TextInput(
             hint_text="Theme name",
             hint_text_color=[0.55, 0.55, 0.55, 1],
-            font_size=18,
+            font_size=sp(18),
             halign="center",
             size_hint=(0.8, 0.15),
             pos_hint={"x": 0.1, "y": 0.5},
@@ -47,7 +48,7 @@ class AddThemePopup(Popup):
 
         self.button_add = RoundedButton(
             text="Add theme",  # Add a word
-            font_size=20,
+            font_size=sp(20),
             size_hint=(0.75, 0.2),
             pos_hint={"x": 0.125, "y": 0.1},
         )
@@ -72,7 +73,7 @@ class DeletePopup(Popup):
 
         self.label_delete = Label(
             text="Delete theme:",
-            font_size="18",
+            font_size=sp(18),
             size_hint=(1, 0),
             pos_hint={"x": 0, "y": 0.70},
         )
@@ -80,7 +81,7 @@ class DeletePopup(Popup):
 
         self.label_theme = Label(
             text=f"{name_theme}",
-            font_size="18",
+            font_size=sp(18),
             size_hint=(1, 0),
             pos_hint={"x": 0, "y": 0.60},
         )
@@ -88,7 +89,7 @@ class DeletePopup(Popup):
 
         self.button_delete = RoundedButton(
             text="Delete",
-            font_size=20,
+            font_size=sp(20),
             size_hint=(0.75, 0.18),
             pos_hint={"x": 0.125, "y": 0.08},
         )
@@ -115,7 +116,7 @@ class RenamePopup(Popup):
 
         self.label_rename = Label(
             text="Edit theme:",
-            font_size="18",
+            font_size=sp(18),
             size_hint=(1, 0),
             pos_hint={"x": 0, "y": 0.80},
         )
@@ -123,7 +124,7 @@ class RenamePopup(Popup):
 
         self.label_theme = Label(
             text=f"{name_theme}",
-            font_size="18",
+            font_size=sp(18),
             size_hint=(1, 0),
             pos_hint={"x": 0, "y": 0.70},
         )
@@ -132,7 +133,7 @@ class RenamePopup(Popup):
         self.text_input_rename_theme = TextInput(
             text=f"{name_theme}",
             hint_text_color=[0.55, 0.55, 0.55, 1],
-            font_size=18,
+            font_size=sp(18),
             halign="center",
             size_hint=(0.8, 0.15),
             pos_hint={"x": 0.1, "y": 0.4},
@@ -145,7 +146,7 @@ class RenamePopup(Popup):
 
         self.button_update = RoundedButton(
             text="Save",
-            font_size=20,
+            font_size=sp(20),
             size_hint=(0.75, 0.18),
             pos_hint={"x": 0.125, "y": 0.08},
         )
@@ -170,7 +171,7 @@ class DeleteNotePopup(Popup):
 
         self.label_delete = Label(
             text="Delete note:",
-            font_size="18",
+            font_size=sp(18),
             size_hint=(1, 0),
             pos_hint={"x": 0, "y": 0.70},
         )
@@ -178,7 +179,7 @@ class DeleteNotePopup(Popup):
 
         self.label_theme = Label(
             text=f"{word} - {translate}",
-            font_size="18",
+            font_size=sp(18),
             size_hint=(1, 0),
             pos_hint={"x": 0, "y": 0.60},
         )
@@ -186,7 +187,7 @@ class DeleteNotePopup(Popup):
 
         self.button_delete = RoundedButton(
             text="Delete",
-            font_size=20,
+            font_size=sp(20),
             size_hint=(0.75, 0.18),
             pos_hint={"x": 0.125, "y": 0.08},
         )
@@ -214,7 +215,7 @@ class RenameNotesPopup(Popup):
 
         self.label_footnote = Label(
             text="Edit note:",
-            font_size="18",
+            font_size=sp(18),
             size_hint=(1, 0),
             pos_hint={"x": 0, "y": 0.80},
         )
@@ -222,7 +223,7 @@ class RenameNotesPopup(Popup):
 
         self.label_notes = Label(
             text=f"{word} - {translate}",
-            font_size="18",
+            font_size=sp(18),
             size_hint=(1, 0),
             pos_hint={"x": 0, "y": 0.70},
         )
@@ -231,7 +232,7 @@ class RenameNotesPopup(Popup):
         self.text_input_word = TextInput(
             text=word,
             hint_text_color=[0.55, 0.55, 0.55, 1],
-            font_size=18,
+            font_size=sp(18),
             halign="center",
             size_hint=(0.38, 0.15),
             pos_hint={"x": 0.1, "y": 0.4},
@@ -245,7 +246,7 @@ class RenameNotesPopup(Popup):
         self.text_input_translate = TextInput(
             text=translate,
             hint_text_color=[0.55, 0.55, 0.55, 1],
-            font_size=18,
+            font_size=sp(18),
             halign="center",
             size_hint=(0.38, 0.15),
             pos_hint={"x": 0.5, "y": 0.4},
@@ -258,7 +259,7 @@ class RenameNotesPopup(Popup):
 
         self.button_update = RoundedButton(
             text="Save",
-            font_size=20,
+            font_size=sp(20),
             size_hint=(0.75, 0.18),
             pos_hint={"x": 0.125, "y": 0.08},
         )
@@ -281,7 +282,7 @@ class ErrorPopup(Popup):
 
         self.label_warning = Label(
             text=("One of the fields is not filled"),
-            font_size="18",
+            font_size=sp(18),
             size_hint=(1, 0),
             pos_hint={"x": 0, "y": 0.65},
         )
@@ -289,7 +290,7 @@ class ErrorPopup(Popup):
 
         self.button_agree = RoundedButton(
             text="OK",
-            font_size=20,
+            font_size=sp(20),
             size_hint=(0.75, 0.18),
             pos_hint={"x": 0.125, "y": 0.08},
         )
@@ -314,7 +315,7 @@ class BackPopup(Popup):
 
         self.label_warning = Label(
             text=("Save settings changes?"),
-            font_size="18",
+            font_size=sp(18),
             size_hint=(1, 0),
             pos_hint={"x": 0, "y": 0.65},
         )
@@ -322,7 +323,7 @@ class BackPopup(Popup):
 
         self.button_agree = RoundedButton(
             text="OK",
-            font_size=20,
+            font_size=sp(20),
             size_hint=(0.38, 0.15),
             pos_hint={"x": 0.1, "y": 0.08},
         )
@@ -330,7 +331,7 @@ class BackPopup(Popup):
 
         self.button_cancel = RoundedButton(
             text="Cancel",
-            font_size=20,
+            font_size=sp(20),
             size_hint=(0.38, 0.15),
             pos_hint={"x": 0.5, "y": 0.08},
         )
@@ -349,19 +350,26 @@ class DictBubble(ModalView):
         super(DictBubble, self).__init__(**kwargs)
 
         self.bubble = Bubble(orientation="horizontal")
-        box_layout = BoxLayout(orientation="horizontal")
+        self.box_layout = BoxLayout(orientation="horizontal")
 
-        self.button_rename = BubbleButton(text="Rename")
+        self.button_rename = BubbleButton(
+            text="Rename",
+            font_size=sp(18),
+            halign="center",
+        )
         self.button_rename.bind(on_press=self.dismiss)
 
-        self.button_delete = BubbleButton(text="Delete")
+        self.button_delete = BubbleButton(
+            text="Delete",
+            font_size=sp(18),
+            halign="center",
+        )
         self.button_delete.bind(on_press=self.dismiss)
 
-        box_layout.add_widget(self.button_rename)
-        box_layout.add_widget(self.button_delete)
+        self.box_layout.add_widget(self.button_rename)
+        self.box_layout.add_widget(self.button_delete)
 
-        self.bubble.add_widget(box_layout)
-
+        self.bubble.add_widget(self.box_layout)
         self.add_widget(self.bubble)
 
 
@@ -382,7 +390,7 @@ class RightAnswerPopup(Popup):
 
         self.button = RoundedButton(
             text="Next",
-            font_size=20,
+            font_size=sp(20),
             size_hint=(0.62, 0.2),
             pos_hint={"x": 0.196, "y": 0.13},
         )
@@ -408,7 +416,7 @@ class WrongAnswerPopup(Popup):
 
         self.label_incorrect_word = Label(
             text=f"{correct_word}",
-            font_size=20,
+            font_size=sp(20),
             size_hint=(1, 0),
             pos_hint={"x": 0, "y": 0.70},
             color=(1, 0.51, 0.58, 1),
@@ -417,7 +425,7 @@ class WrongAnswerPopup(Popup):
 
         self.button = RoundedButton(
             text="Next",
-            font_size=20,
+            font_size=sp(20),
             size_hint=(0.62, 0.2),
             pos_hint={"x": 0.196, "y": 0.13},
         )
@@ -433,7 +441,7 @@ def popup_empty():
     """
     popup = ErrorPopup(
         title="The field is not filled",
-        title_size=18,
+        title_size=sp(18),
         size_hint=(0.8, 0.6),
         pos_hint={"x": 0.1, "y": 0.2},
         separator_height=3,
@@ -450,7 +458,7 @@ def popup_same_theme():
     """
     popup = ErrorPopup(
         title="Repetition error",
-        title_size=18,
+        title_size=sp(18),
         size_hint=(0.8, 0.6),
         pos_hint={"x": 0.1, "y": 0.2},
         separator_height=3,
@@ -468,7 +476,7 @@ def popup_settings_error():
     """
     popup = ErrorPopup(
         title="Settings error",
-        title_size=18,
+        title_size=sp(18),
         size_hint=(0.8, 0.6),
         pos_hint={"x": 0.1, "y": 0.2},
         separator_height=3,
@@ -476,3 +484,57 @@ def popup_settings_error():
     )
     popup.open()
     popup.label_warning.text = "Checkbox is not selected"
+
+
+def popup_create_theme():
+    """
+    popup_create_theme:
+        title="Theme is not created"\n
+        text="Please create a theme."
+    """
+    popup = ErrorPopup(
+        title="Theme is not created",
+        title_size=sp(18),
+        size_hint=(0.8, 0.6),
+        pos_hint={"x": 0.1, "y": 0.2},
+        separator_height=3,
+        separator_color=[0.0, 0.84, 0.64],
+    )
+    popup.open()
+    popup.label_warning.text = "Please create a theme."
+
+
+def popup_selecte_theme():
+    """
+    popup_create_theme:
+        title="Theme is not selected"\n
+        text="Please selecte a theme."
+    """
+    popup = ErrorPopup(
+        title="Theme is not selected",
+        title_size=sp(18),
+        size_hint=(0.8, 0.6),
+        pos_hint={"x": 0.1, "y": 0.2},
+        separator_height=3,
+        separator_color=[0.0, 0.84, 0.64],
+    )
+    popup.open()
+    popup.label_warning.text = "Please selecte a theme."
+
+
+def popup_selecte_theme():
+    """
+    popup_create_theme:
+        title="Settings error"\n
+        text="Please add an record to the theme"
+    """
+    popup = ErrorPopup(
+        title="Subject does not contain any records",
+        title_size=sp(18),
+        size_hint=(0.8, 0.6),
+        pos_hint={"x": 0.1, "y": 0.2},
+        separator_height=3,
+        separator_color=[0.0, 0.84, 0.64],
+    )
+    popup.open()
+    popup.label_warning.text = "Please add an record to the theme."

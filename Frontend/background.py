@@ -1,5 +1,5 @@
 KV = """
 MDScreen:
     FitImage:
-        source: 'Frontend\img\Backfon.png'
+        source: 'Frontend\Img\Backfon.png'
 """

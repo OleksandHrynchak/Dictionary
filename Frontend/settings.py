@@ -10,6 +10,7 @@ from kivy.uix.checkbox import CheckBox
 from kivy.uix.slider import Slider
 from kivy.uix.spinner import Spinner
 from kivy.uix.scrollview import ScrollView
+from kivy.metrics import sp
 
 
 from Frontend.background import KV
@@ -47,7 +48,7 @@ class PageSettings(Screen):
             pos_hint={"x": 0.15, "y": 0.7},
         )
         # layout for checkboxes and their labels, is part of the settings.
-        gridlayout = GridLayout(
+        self.gridlayout = GridLayout(
             cols=2,
             spacing=[20, 0],
             row_force_default=True,
@@ -56,7 +57,7 @@ class PageSettings(Screen):
             pos_hint={"x": 0.2, "y": 0.37},
         )
         # Main scroll view.
-        scrollview = ScrollView(
+        self.scrollview = ScrollView(
             size_hint=(1, 0.7),
             pos_hint={"x": 0, "y": 0.16},
         )
@@ -64,11 +65,10 @@ class PageSettings(Screen):
         self.root = Builder.load_string(KV)
         # --------------------------------------------------------------------------------------
         self.spinner = Spinner(
-            text="List of themes",
-            font_size=18,
+            text="Select theme",
+            font_size=sp(18),
             size_hint=(0.7, 0.3),
             pos_hint={"x": 0.15, "y": 0.7},
-            values=themes_from_db(),
         )
         # id_settings_theme defines id theme.
         self.spinner.bind(text=id_settings_theme)
@@ -78,7 +78,7 @@ class PageSettings(Screen):
             RoundedButton(
                 text="<--",
                 on_press=self.save_check,
-                font_size=20,
+                font_size=sp(20),
                 size_hint=(0.15, 0.08),
                 pos_hint={"x": 0.04, "y": 0.89},
             )
@@ -87,7 +87,7 @@ class PageSettings(Screen):
             RoundedButton(
                 text="Save",
                 on_press=self.save_settings,
-                font_size=20,
+                font_size=sp(20),
                 size_hint=(0.6, 0.08),
                 pos_hint={"x": 0.2, "y": 0.04},
             )
@@ -99,14 +99,14 @@ class PageSettings(Screen):
             size_hint_x=None,
             active=True,
         )
-        gridlayout.add_widget(self.checkbox_check)
+        self.gridlayout.add_widget(self.checkbox_check)
         # force_checkbox_check is responsible for ensuring that checkboxes do not remain unactivated.
         self.checkbox_check.bind(on_press=self.force_checkbox_check)
 
-        gridlayout.add_widget(
+        self.gridlayout.add_widget(
             CustomLabel(
                 text="Check",
-                font_size=20,
+                font_size=sp(20),
                 height=40,
             )
         )
@@ -116,14 +116,14 @@ class PageSettings(Screen):
             size=(20, 5),
             size_hint_x=None,
         )
-        gridlayout.add_widget(self.checkbox_repeat)
+        self.gridlayout.add_widget(self.checkbox_repeat)
         # force_checkbox_check is responsible for ensuring that checkboxes do not remain unactivated.
         self.checkbox_repeat.bind(on_press=self.force_checkbox_check)
 
-        gridlayout.add_widget(
+        self.gridlayout.add_widget(
             CustomLabel(
                 text="Repeat",
-                font_size=20,
+                font_size=sp(20),
             )
         )
         # ___________________________________________________________________________________________________________
@@ -131,12 +131,12 @@ class PageSettings(Screen):
             size=(20, 5),
             size_hint_x=None,
         )
-        gridlayout.add_widget(self.checkbox_word)
+        self.gridlayout.add_widget(self.checkbox_word)
 
-        gridlayout.add_widget(
+        self.gridlayout.add_widget(
             CustomLabel(
                 text="Word",
-                font_size=20,
+                font_size=sp(20),
             )
         )
         # ___________________________________________________________________________________________________________
@@ -144,12 +144,12 @@ class PageSettings(Screen):
             size=(20, 5),
             size_hint_x=None,
         )
-        gridlayout.add_widget(self.checkbox_translate)
+        self.gridlayout.add_widget(self.checkbox_translate)
 
-        gridlayout.add_widget(
+        self.gridlayout.add_widget(
             CustomLabel(
                 text="Translate",
-                font_size=20,
+                font_size=sp(20),
             )
         )
         # ___________________________________________________________________________________________________________
@@ -158,14 +158,14 @@ class PageSettings(Screen):
             size=(20, 5),
             size_hint_x=None,
         )
-        gridlayout.add_widget(self.checkbox_randomly)
+        self.gridlayout.add_widget(self.checkbox_randomly)
         # force_checkbox_check is responsible for ensuring that checkboxes do not remain unactivated.
         self.checkbox_randomly.bind(on_press=self.force_checkbox_check)
 
-        gridlayout.add_widget(
+        self.gridlayout.add_widget(
             CustomLabel(
                 text="Randomly",
-                font_size=20,
+                font_size=sp(20),
             )
         )
         # ___________________________________________________________________________________________________________
@@ -175,14 +175,14 @@ class PageSettings(Screen):
             size_hint_x=None,
             active=True,
         )
-        gridlayout.add_widget(self.checkbox_successively)
+        self.gridlayout.add_widget(self.checkbox_successively)
         # force_checkbox_check is responsible for ensuring that checkboxes do not remain unactivated.
         self.checkbox_successively.bind(on_press=self.force_checkbox_check)
 
-        gridlayout.add_widget(
+        self.gridlayout.add_widget(
             CustomLabel(
                 text="Successively",
-                font_size=20,
+                font_size=sp(18),
             )
         )
         # ___________________________________________________________________________________________________________
@@ -198,7 +198,6 @@ class PageSettings(Screen):
             value_track_color=[0.41, 1, 0.96, 1],
         )
         floatlayout.add_widget(self.slider_time)
-        # slider_value
         self.slider_time.bind(value=self.slider_value)
 
         self.text_input_time = TextInput(
@@ -206,7 +205,7 @@ class PageSettings(Screen):
             multiline=False,
             hint_text="min",
             hint_text_color=[0.55, 0.55, 0.55, 1],
-            font_size=25,
+            font_size=sp(25),
             halign="center",
             size_hint=(0.3, 0.09),
             pos_hint={"x": 0.35, "y": 0.01},
@@ -223,33 +222,35 @@ class PageSettings(Screen):
         self.text_input_time.bind(text=self.text_input_min_number)
 
         boxlayout.add_widget(self.spinner)
-        floatlayout.add_widget(gridlayout)
+        floatlayout.add_widget(self.gridlayout)
         floatlayout.add_widget(boxlayout)
-        scrollview.add_widget(floatlayout)
-        relativelayout.add_widget(scrollview)
+        self.scrollview.add_widget(floatlayout)
+        relativelayout.add_widget(self.scrollview)
         self.add_widget(self.root)
         self.add_widget(relativelayout)
-        self.update_settings()
+
+        if themes_from_db():
+            self.spinner.values = themes_from_db()
+            self.update_settings()
 
     def slider_value(self, spinner, value):
         """
         slider_value:
-            passes the value of the text input to the slider.
+            Passes the value of the text input to the slider.
         """
-        print(type(value))
         self.text_input_time.text = str(value)
 
     def text_input_number(self, text_input, sec: str):
         """
         text_input_number:
-            passes slider value to textinput.
+            Passes slider value to textinput.
         """
         self.slider_time.value = int("0" + sec)
 
     def text_input_max_number(self, textinput, sec: str):
         """
         text_input_max_number:
-            creates a limit of the maximum number for entering into the textinput.
+            Creates a limit of the maximum number for entering into the textinput.
         """
         max_sec = 60
         if int("0" + sec) > max_sec:
@@ -258,7 +259,7 @@ class PageSettings(Screen):
     def text_input_min_number(self, textinput, sec: str):
         """
         text_input_min_number:
-            creates a limit on the minimum number to enter in textinput.
+            Creates a limit on the minimum number to enter in textinput.
         """
         min_sec = 1
         if int("0" + sec) < min_sec:
@@ -267,7 +268,7 @@ class PageSettings(Screen):
     def force_checkbox_check(self, checkbox):
         """
         force_checkbox_check:
-            is responsible for ensuring that the checkboxes do not remain unactivated,
+            Is responsible for ensuring that the checkboxes do not remain unactivated,
             one of the checkboxes of the group must always be activated.
         """
         if checkbox == self.checkbox_check:
@@ -283,7 +284,7 @@ class PageSettings(Screen):
     def update_settings(self):
         """
         update_settings:
-            updates all settings values.
+            Updates all settings values.
         """
         self.spinner.text = call_settings()[1]
         self.checkbox_check.active = bool(call_settings()[2])
@@ -297,7 +298,7 @@ class PageSettings(Screen):
     def check_settings(self) -> dict:
         """
         check_settings:
-            reates a dictionary with the current setting values.
+            Reates a dictionary with the current setting values.
         """
         settings = {
             "theme": str(self.spinner.text),
@@ -314,7 +315,7 @@ class PageSettings(Screen):
     def save_settings(self, button):
         """
         save_settings:
-            updates the settings in the database, checks whether one of
+            Updates the settings in the database, checks whether one of
             the world or translate checkboxes is activated,
             if they are not activated, then displays a warning.
         """
@@ -326,7 +327,7 @@ class PageSettings(Screen):
     def save_check(self, button):
         """
         save_check:
-            checks whether the settings are saved in the database.
+            Checks whether the settings are saved in the database.
         """
         if tuple(self.check_settings().values()) == call_settings()[1:]:
             # set_screen opens the selected screen
@@ -335,9 +336,13 @@ class PageSettings(Screen):
             self.popup_back()
 
     def popup_back(self):
+        """
+        popup_back:
+            Causes a popup to exit the settings screen.
+        """
         self.popup_choise = BackPopup(
             title="Warning",
-            title_size=18,
+            title_size=sp(18),
             size_hint=(0.9, 0.7),
             pos_hint={"x": 0.05, "y": 0.15},
         )
@@ -352,7 +357,7 @@ class PageSettings(Screen):
     def save_close(self, button):
         """
         save_close:
-            saves the settings in the database, takes the user to the menu screen
+            Saves the settings in the database, takes the user to the menu screen
             and turns off the message window.
         """
         self.save_settings(button)
@@ -363,12 +368,24 @@ class PageSettings(Screen):
     def back_close(self, button):
         """
         back_close:
-            does not save the settings in the database, takes the user to the menu screen
+            Does not save the settings in the database, takes the user to the menu screen
             and turns off the message window.
         """
         set_screen("menu")
         self.update_settings()
         self.popup_choise.dismiss()
+
+    def on_enter(self):
+        """
+        on_enter:
+            Executed when the user enters the settings screen.
+        """
+
+        call_settings()
+        self.update_settings()
+        if themes_from_db():
+            self.spinner.values = themes_from_db()
+        self.gridlayout.row_default_height = (self.scrollview.height * 0.64) / 6
 
 
 sm.add_widget(PageSettings(name="pageSettings"))

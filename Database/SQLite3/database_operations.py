@@ -1,4 +1,7 @@
+import os
 import sqlite3
+
+from Database.SQLite3.database import create_database
 
 
 def connect() -> sqlite3.Connection:
@@ -6,8 +9,17 @@ def connect() -> sqlite3.Connection:
     connect:
         Establishes a connection to the SQLite database and returns an `sqlite3.Connection` object.
     """
+    # Get the absolute path to the current directory
+    current_directory = os.path.dirname(os.path.abspath(__file__))
+
+    # Create the absolute path to the database file
+    db_path = os.path.join(current_directory, "dictionary.db")
+
+    if not os.path.exists(db_path):
+        create_database()
+
     try:
-        connection = sqlite3.connect("Database/SQLite3/dictionary_data.sqlite")
+        connection = sqlite3.connect(db_path)
         return connection
     except sqlite3.Error as error:
         print(f"Error connecting to SQLite database 'connect': {error}")
@@ -16,7 +28,7 @@ def connect() -> sqlite3.Connection:
 def add_theme(text_value: str):
     """
     add_theme:
-        takes the theme name and writes it to the database in the themes table.
+        Takes the theme name and writes it to the database in the themes table.
     """
     connection = connect()
     try:
@@ -32,7 +44,7 @@ def add_theme(text_value: str):
 def themes_from_db() -> list:
     """
     themes_from_db:
-        retrieves the themes names from the database and returns them as a list.
+        Retrieves the themes names from the database and returns them as a list.
     """
     connection = connect()
     try:
@@ -50,15 +62,17 @@ def themes_from_db() -> list:
 def id_theme(spinner, theme: str):
     """
     id_theme:
-        takes the name of the theme and outputs its id in the global variable `theme_id`.\n
-        used on the `Theme` screen.
+        Takes the name of the theme and outputs its id in the global variable `theme_id`.\n
+        Used on the `Theme` screen.
     """
     connection = connect()
     try:
         cursor = connection.cursor()
         cursor.execute("SELECT id FROM Themes WHERE theme = ?", (theme,))
-        global theme_id
-        theme_id = cursor.fetchone()[0]
+        result = cursor.fetchone()
+        if result:
+            global theme_id
+            theme_id = result[0]
         connection.commit()
     except sqlite3.Error as error:
         print(f"Error executing SELECT query 'id_theme': {error}")
@@ -69,9 +83,9 @@ def id_theme(spinner, theme: str):
 def output_notes() -> list:
     """
     output_notes:
-        outputs the words and translation according to the theme id from the `Notes` table,
+        Outputs the words and translation according to the theme id from the `Notes` table,
         using the 'theme_id' change.\n
-        used on the `Theme` screen.
+        Used on the `Theme` screen.
     """
     connection = connect()
     try:
@@ -92,15 +106,17 @@ def output_notes() -> list:
 def id_settings_theme(spinner, theme: str):
     """
     id_settings_theme:
-        takes the name of the theme and outputs its id in the global variable `settings_theme_id`.\n
-        used on the `Settings` screen.
+        Takes the name of the theme and outputs its id in the global variable `settings_theme_id`.\n
+        Used on the `Settings` screen.
     """
     connection = connect()
     try:
         cursor = connection.cursor()
         cursor.execute("SELECT id FROM Themes WHERE theme = ?", (theme,))
-        global settings_theme_id
-        settings_theme_id = cursor.fetchone()[0]
+        result = cursor.fetchone()
+        if result:
+            global settings_theme_id
+            settings_theme_id = result[0]
         connection.commit()
     except sqlite3.Error as error:
         print(f"Error executing SELECT query 'id_settings_theme': {error}")
@@ -111,9 +127,9 @@ def id_settings_theme(spinner, theme: str):
 def output_settings_notes() -> list:
     """
     output_settings_notes:
-        outputs the words and translation according to the theme id from the `Notes` table,
+        Outputs the words and translation according to the theme id from the `Notes` table,
         using the 'settings_theme_id' change.\n
-        used on the `Settings` screen.
+        Used on the `Settings` screen.
     """
     connection = connect()
     try:
@@ -134,7 +150,7 @@ def output_settings_notes() -> list:
 def save_word_and_translate(word: str, translate: str):
     """
     save_word_and_translate:
-        takes two values `word` and `translation` and stores them in the `Notes` table according to the selected theme.
+        Takes two values `word` and `translation` and stores them in the `Notes` table according to the selected theme.
     """
     connection = connect()
     try:
@@ -153,7 +169,7 @@ def save_word_and_translate(word: str, translate: str):
 def update_theme(update: str):
     """
     save_word_and_translate:
-        takes `update` which new name of the selected theme using `theme_id` and renames it.
+        Takes `update` which new name of the selected theme using `theme_id` and renames it.
     """
     connection = connect()
     try:
@@ -175,7 +191,7 @@ def update_theme(update: str):
 def delete_theme():
     """
     delete_theme:
-        removes the theme selected by `theme_id`.
+        Removes the theme selected by `theme_id`.
     """
     connection = connect()
     try:
@@ -191,7 +207,7 @@ def delete_theme():
 def delete_notes():
     """
     delete_theme:
-        deletes all notes where id equals `theme_id`.
+        Deletes all notes where id equals `theme_id`.
     """
     connection = connect()
     try:
@@ -210,7 +226,7 @@ def update_note(up_word: str, up_translate: str, old_word: str, old_translate: s
     `up_translate` -> `update_translate`\n
 
     update_note:
-        accepts new 'words' and 'translates' and old 'words' and 'translations' and replaces old ones with new ones.
+        Accepts new 'words' and 'translates' and old 'words' and 'translations' and replaces old ones with new ones.
     """
     connection = connect()
     try:
@@ -229,7 +245,7 @@ def update_note(up_word: str, up_translate: str, old_word: str, old_translate: s
 def delete_note(word: str, translate: str):
     """
     delete_note:
-        takes the word and translation and removes them from the selected `theme_id`.
+        Takes the word and translation and removes them from the selected `theme_id`.
     """
     connection = connect()
     try:
@@ -248,7 +264,7 @@ def delete_note(word: str, translate: str):
 def change_save(settings: dict):
     """
     change_save:
-        takes the dictionary with the selected settings and updates it in the `Settings` table.
+        Takes the dictionary with the selected settings and updates it in the `Settings` table.
     """
     connection = connect()
     try:
@@ -276,7 +292,7 @@ def change_save(settings: dict):
 def call_settings() -> tuple:
     """
     change_save:
-        outputs a tuple with stored values from the `Settings` table.
+        Outputs a tuple with stored values from the `Settings` table.
     """
     connection = connect()
     try:
